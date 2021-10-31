@@ -1,3 +1,4 @@
+using lab1.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -6,20 +7,26 @@ using Microsoft.Extensions.Hosting;
 
 namespace lab1 {
 public class Startup {
-    public Startup(IConfiguration configuration) {
+    private readonly IWebHostEnvironment _environment;
+
+    public Startup(IConfiguration configuration, IWebHostEnvironment environment) {
+        _environment = environment;
         Configuration = configuration;
     }
 
     public IConfiguration Configuration { get; }
 
-    // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services) {
-        services.AddControllersWithViews();
+        services.AddControllersWithViews()
+            .AddRazorRuntimeCompilation();
+        services.AddTransient<IActivitiesService>(_ =>
+            new BaseActivitiesService(_environment.WebRootPath));
+        services.AddTransient<IReportService, BaseReportService>();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env) {
-        if (env.IsDevelopment()) {
+    public void Configure(IApplicationBuilder app) {
+        if (_environment.IsDevelopment()) {
             app.UseDeveloperExceptionPage();
         }
         else {
