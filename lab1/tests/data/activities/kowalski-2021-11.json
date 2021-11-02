@@ -2,7 +2,6 @@
   "frozen": false,
   "entries": [
     {
-      "id": 1,
       "date": "2021-11-07",
       "code": "ARGUS-123",
       "subCode": "database",
@@ -10,7 +9,6 @@
       "description": "data import"
     },
     {
-      "id": 2,
       "date": "2021-11-07",
       "code": "OTHER",
       "subCode": "",
@@ -18,7 +16,6 @@
       "description": "picie kawy"
     },
     {
-      "id": 3,
       "date": "2021-11-08",
       "code": "ARGUS-123",
       "subCode": "",
@@ -26,7 +23,6 @@
       "description": "kompilacja"
     },
     {
-      "id": 4,
       "date": "2021-11-08",
       "code": "OTHER",
       "subCode": "",
@@ -34,7 +30,6 @@
       "description": "office arrangement"
     },
     {
-      "id": 5,
       "date": "2021-11-12",
       "code": "ARGUS-123",
       "subCode": "other",

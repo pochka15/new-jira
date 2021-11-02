@@ -1,0 +1,47 @@
+@model EditEntryViewModel
+
+@{
+    ViewData["Title"] = "Edit entry";
+}
+
+<!DOCTYPE html>
+
+<html lang="us">
+<head>
+    <title>Edit entry</title>
+</head>
+<body>
+<div>
+    <form method="post">
+        @Html.HiddenFor(m => m.EntryDescription.EntryId)
+        @Html.HiddenFor(m => m.EntryDescription.ReportOrigin.UserName)
+        @Html.HiddenFor(m => m.EntryDescription.ReportOrigin.Year)
+        @Html.HiddenFor(m => m.EntryDescription.ReportOrigin.Month)
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="Project">Project</span>
+            <input asp-for="Project" class="form-control" aria-label="Sizing example input" aria-describedby="Project">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="SubCategory">SubCategory</span>
+            <input asp-for="SubCategory" class="form-control" aria-label="Sizing example input" aria-describedby="SubCategory">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="SpentTime">SpentTime</span>
+            <input asp-for="SpentTime" class="form-control" aria-label="Sizing example input" aria-describedby="SpentTime">
+        </div>
+
+        <span class="input-group-text">Description</span>
+        <textarea asp-for="Description" class="form-control" aria-label="Description"></textarea>
+        <button
+            type="submit"
+            asp-action="Edit"
+            class="btn btn-primary">
+            Submit
+        </button>
+    </form>
+</div>
+</body>
+</html>

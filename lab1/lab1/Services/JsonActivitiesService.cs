@@ -5,16 +5,19 @@ using System.Text.Json;
 using lab1.Models;
 
 namespace lab1.Services {
-public class BaseActivitiesService : IActivitiesService {
-    private readonly string _pathToData;
+public class JsonActivitiesService : IActivitiesService {
+    private readonly string _dataRoot;
 
-    public BaseActivitiesService(string pathToData) {
-        _pathToData = pathToData;
+    /// <summary>
+    /// ctor
+    /// </summary>
+    /// <param name="dataRoot">a root folder containing the json data</param>
+    public JsonActivitiesService(string dataRoot) {
+        _dataRoot = dataRoot;
     }
 
-    // TODO(@pochka15): test it
     public Activity? GetActivityByCode(string code) {
-        var path = Path.Combine(_pathToData, "data");
+        var path = Path.Combine(_dataRoot);
         return Directory.EnumerateFiles(path, "activities.json", SearchOption.TopDirectoryOnly)
             .SelectMany(it => DeserializeActivitiesContainer(it).Activities)
             .FirstOrDefault(it => it != null && it.Code == code);

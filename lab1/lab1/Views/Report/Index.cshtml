@@ -1,0 +1,70 @@
+@model ReportViewModel
+
+@{
+    ViewData["Title"] = "Report";
+    // Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html lang="us">
+<head>
+    <title>test</title>
+</head>
+<body>
+<div>
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-primary">
+                Add entry
+            </button>
+        </div>
+        <div class="col">
+            <form asp-action="ChangeDate" method="get">
+                <input asp-for="ChangeDateForm.Date">
+                @Html.HiddenFor(m => m.ChangeDateForm.UserName)
+                <button type="submit" class="btn-primary">
+                    Change date
+                </button>
+            </form>
+        </div>
+        <div class="col">
+            Overall time: @Model.OverallTime
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var entry in Model.Entries) {
+            <form method="post">
+                <input type="hidden" asp-for="EntryDescription.ReportOrigin.Month" value="@(Model.Origin.Month)"/>
+                <input type="hidden" asp-for="EntryDescription.ReportOrigin.Year" value="@(Model.Origin.Year)"/>
+                <input type="hidden" asp-for="EntryDescription.ReportOrigin.UserName" value="@(Model.Origin.UserName)"/>
+                <input type="hidden" asp-for="EntryDescription.EntryId" value="@entry.Id"/>
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@entry.ActivityCode</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Date: @entry.Date</h6>
+                        <p class="card-text">Time: @(entry.Time)</p>
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                            asp-controller="ReportEntry"
+                            asp-action="Index">
+                            Edit
+                        </button>
+
+                        <button
+                            type="submit"
+                            asp-controller="ReportEntry"
+                            asp-action="Delete"
+                            class="btn btn-danger">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
+</div>
+</body>
+</html>

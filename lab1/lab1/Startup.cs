@@ -1,11 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using System.IO;
 using lab1.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -22,11 +18,13 @@ public class Startup {
     public IConfiguration Configuration { get; }
 
     public void ConfigureServices(IServiceCollection services) {
+        var root = Path.Combine(_environment.WebRootPath, "data");
         services.AddControllersWithViews()
             .AddRazorRuntimeCompilation();
         services.AddTransient<IActivitiesService>(_ =>
-            new BaseActivitiesService(_environment.WebRootPath));
-        services.AddTransient<IReportService, BaseReportService>();
+            new JsonActivitiesService(root));
+        services.AddTransient<IReportService>(_ =>
+            new JsonReportService(root));
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

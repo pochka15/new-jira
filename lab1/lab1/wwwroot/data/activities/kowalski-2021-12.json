@@ -18,22 +18,6 @@
       "description": "picie kawy"
     },
     {
-      "id": 3,
-      "date": "2021-11-08",
-      "code": "ARGUS-123",
-      "subCode": "",
-      "time": 45,
-      "description": "kompilacja"
-    },
-    {
-      "id": 4,
-      "date": "2021-11-08",
-      "code": "OTHER",
-      "subCode": "",
-      "time": 120,
-      "description": "office arrangement"
-    },
-    {
       "id": 5,
       "date": "2021-11-12",
       "code": "ARGUS-123",
@@ -42,14 +26,5 @@
       "description": "project meeting"
     }
   ],
-  "accepted": [
-    {
-      "code": "ARGUS-123",
-      "time": 100
-    },
-    {
-      "code": "OTHER",
-      "time": 110
-    }
-  ]
+  "accepted": []
 }
