@@ -19,7 +19,7 @@ public class JsonReportService : IReportService {
     }
 
     public DayReport? GetDayReport(ReportOrigin origin, int day) {
-        var root = Path.Combine(_dataRoot, "data", "activities");
+        var root = Path.Combine(_dataRoot, "activities");
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
         var query = from path in files
             where Path.GetFileName(path).Equals(origin.UserName + "-" + origin.Year + "-" + origin.Month + ".json")
@@ -36,7 +36,7 @@ public class JsonReportService : IReportService {
     }
 
     public MonthReport? GetMonthReport(ReportOrigin origin) {
-        var root = Path.Combine(_dataRoot, "data", "activities");
+        var root = Path.Combine(_dataRoot, "activities");
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
         var query = from path in files
             where Path.GetFileName(path).Equals(GetReportFileName(origin))
@@ -46,7 +46,7 @@ public class JsonReportService : IReportService {
 
     public MonthReport DeleteEntryMatching(ReportOrigin origin, Predicate<ReportEntry> pred) {
         var report = GetMonthReport(origin)!;
-        var path = Path.Combine(_dataRoot, "data", "activities", GetReportFileName(origin));
+        var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
 
         report.Entries.RemoveAll(pred);
         File.WriteAllText(path, JsonSerializer.Serialize(report));
@@ -56,7 +56,7 @@ public class JsonReportService : IReportService {
 
     public MonthReport EditEntry(ReportOrigin origin, EditEntryDto dto) {
         var report = GetMonthReport(origin)!;
-        var path = Path.Combine(_dataRoot, "data", "activities", GetReportFileName(origin));
+        var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
 
         foreach (var entry in report.Entries.Where(entry => entry.Id == dto.Id)) {
             CopyDataFromDto(entry, dto);
