@@ -1,0 +1,48 @@
+@model MonthStatisticsViewModel
+
+@{
+    ViewData["Title"] = "MonthReport";
+}
+
+<div>
+    <form asp-action="MonthStatistics">
+        @Html.HiddenFor(m => m.UserName)
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="Year">Year</span>
+            <input asp-for="Year" class="form-control" aria-label="Sizing example input" aria-describedby="Year">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="Month">Month</span>
+            <input asp-for="Month" class="form-control" aria-label="Sizing example input" aria-describedby="Month">
+        </div>
+        <button
+            type="submit"
+            class="btn btn-primary">
+            Change date
+        </button>
+    </form>
+    <table class="table">
+        <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Project</th>
+            <th scope="col">Overall time</th>
+        </tr>
+        </thead>
+        <tbody>
+        @{ var i = 1; }
+        @foreach (var (project, time) in Model.ProjectToTime) {
+            <tr>
+                <th scope="row">
+                    @i
+                </th>
+                <td>@project </td>
+                <td>@time </td>
+                @{ i++; }
+            </tr>
+        }
+        </tbody>
+    </table>
+
+
+</div>

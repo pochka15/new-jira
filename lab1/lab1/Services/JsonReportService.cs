@@ -72,6 +72,21 @@ public class JsonReportService : IReportService {
         return (from entry in reports select entry.Time).Sum();
     }
 
+    public MonthStatistics GetMonthStatistics(ReportOrigin origin) {
+        var report = GetMonthReport(origin)!;
+        var query = from entry in report.Entries
+            group entry by entry.ActivityCode
+            into projectGroup
+            select projectGroup;
+        var projectToTime = query.ToDictionary(pGroup => pGroup.Key, CalcOverallTime());
+        return new MonthStatistics {ProjectToTime = projectToTime};
+    }
+
+    private static Func<IGrouping<string, ReportEntry>, int> CalcOverallTime() {
+        return pGroup
+            => (from entry in pGroup select entry.Time).Sum();
+    }
+
     private static string GetReportFileName(ReportOrigin origin) {
         return origin.UserName
                + "-" + origin.Year + "-"

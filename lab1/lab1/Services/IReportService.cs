@@ -10,5 +10,6 @@ public interface IReportService {
     MonthReport DeleteEntryMatching(ReportOrigin reportOrigin, Predicate<ReportEntry> pred);
     MonthReport EditEntry(ReportOrigin reportOrigin, EditEntryDto dto);
     int CalcOverallTime(IEnumerable<ReportEntry> reports);
+    MonthStatistics GetMonthStatistics(ReportOrigin origin);
 }
 }

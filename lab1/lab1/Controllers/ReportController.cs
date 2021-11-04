@@ -41,5 +41,21 @@ public class ReportController : Controller {
             origin.Month, origin.Year, origin.UserName, changeDateForm.Date.Day
         });
     }
+
+    public IActionResult MonthStatistics(string? userName, int? year, int? month) {
+        userName ??= "kowalski";
+        year ??= 2021;
+        month ??= 12;
+
+        var statistics = _reportService.GetMonthStatistics(
+            new ReportOrigin {Year = year, Month = month, UserName = userName});
+        var model = new MonthStatisticsViewModel {
+            ProjectToTime = statistics.ProjectToTime,
+            Year = year.Value,
+            Month = month.Value,
+            UserName = userName
+        };
+        return View(model);
+    }
 }
 }
