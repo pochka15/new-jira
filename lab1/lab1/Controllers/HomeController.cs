@@ -1,6 +1,7 @@
 ﻿#nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Http;
@@ -45,9 +46,11 @@ public class HomeController : Controller {
 
     public IActionResult Index() {
         var state = SessionState;
-        state.Year ??= 2021;
-        state.Month ??= 12;
-        state.Day ??= 7;
+        // default magic constants
+        if (state.Year == null) state = UpdateState(2021, 12, 7);
+
+        Debug.Assert(state.Year != null && state.Month != null && state.Day != null,
+            "state.Year != null && state.Month != null && state.Day != null");
 
         var origin = new ReportOrigin {
             Month = state.Month.Value,
@@ -67,6 +70,18 @@ public class HomeController : Controller {
         return View(model);
     }
 
+    private SessionState UpdateState(int year, int month, int day) {
+        HttpContext.Session.SetString(YearField, year.ToString());
+        HttpContext.Session.SetString(MonthField, month.ToString());
+        HttpContext.Session.SetString(DayField, day.ToString());
+        return new SessionState {
+            UserName = HttpContext.Session.GetString(UserNameField),
+            Year = year,
+            Month = month,
+            Day = day
+        };
+    }
+
     public IActionResult Privacy() {
         return View();
     }
@@ -77,9 +92,7 @@ public class HomeController : Controller {
     }
 
     public IActionResult ChangeDate(ChangeDateForm changeDateForm) {
-        HttpContext.Session.SetString(YearField, changeDateForm.Date.Year.ToString());
-        HttpContext.Session.SetString(MonthField, changeDateForm.Date.Month.ToString());
-        HttpContext.Session.SetString(DayField, changeDateForm.Date.Day.ToString());
+        UpdateState(changeDateForm.Date.Year, changeDateForm.Date.Month, changeDateForm.Date.Day);
         return RedirectToAction("Index");
     }
 
