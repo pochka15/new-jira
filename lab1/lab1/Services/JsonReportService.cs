@@ -44,8 +44,10 @@ public class JsonReportService : IReportService {
         return query.FirstOrDefault();
     }
 
-    public int CalcOverallTime(IEnumerable<Activity> activities) {
-        return (from activity in activities select activity.Time).Sum();
+    public IEnumerable<MonthReport> GetAllReports() {
+        var root = Path.Combine(_dataRoot, "activities");
+        var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
+        return from path in files select DeserializeReport(path);
     }
 
     public MonthStatistics GetMonthStatistics(ReportOrigin origin) {
@@ -85,7 +87,7 @@ public class JsonReportService : IReportService {
             select projectGroup;
         return groups.ToDictionary(
             it => it.Key,
-            gr => (from projectTime in gr select projectTime.Time).Sum());
+            it => IReportService.CalcOverallAcceptedTime(it.AsEnumerable()));
     }
 
     private static Dictionary<string, int> BuildProjectToTime(MonthReport report) {
@@ -93,11 +95,9 @@ public class JsonReportService : IReportService {
             group activity by activity.ProjectCode
             into projectGroup
             select projectGroup;
-        return groups.ToDictionary(pGroup => pGroup.Key, CalcOverallTime());
-    }
-
-    private static Func<IGrouping<string, Activity>, int> CalcOverallTime() {
-        return gr => (from it in gr select it.Time).Sum();
+        return groups.ToDictionary(
+            it => it.Key,
+            it => IReportService.CalcOverallTime(it.AsEnumerable()));
     }
 
     public static string GetReportFileName(ReportOrigin origin) {

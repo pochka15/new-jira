@@ -67,6 +67,11 @@ public class JsonProjectService : IProjectService {
             JsonSerializer.Serialize(new ProjectsContainer {Projects = projects}));
     }
 
+    public int CalcLeftBudget(string projectCode) {
+        var project = GetProjectByCode(projectCode);
+        if (project == null) return 0;
+        return project.Budget - CalcOverallAcceptedTime(projectCode) * project.Cost;
+    }
 
     public Project? GetProjectByCode(string code) {
         return GetAllProjects().FirstOrDefault(it => it.Code == code);
@@ -95,6 +100,14 @@ public class JsonProjectService : IProjectService {
                 Projects = projects
             }));
         return project;
+    }
+
+    private int CalcOverallAcceptedTime(string projectCode) {
+        return _reportService.GetAllReports()
+            .SelectMany(it => it.AcceptedActivities)
+            .Where(it => it.ProjectCode == projectCode)
+            .Select(it => it.Time)
+            .Sum();
     }
 
     private static void CopyDataFromDto(Activity activity, EditActivityDto dto) {

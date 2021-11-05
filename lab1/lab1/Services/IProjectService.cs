@@ -10,5 +10,6 @@ public interface IProjectService {
     void EditActivity(ReportOrigin reportOrigin, EditActivityDto dto);
     void AddActivity(ReportOrigin origin, AddActivityDto dto);
     void UpdateCost(string projectCode, int cost);
+    int CalcLeftBudget(string projectCode);
 }
 }
