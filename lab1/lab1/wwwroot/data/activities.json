@@ -30,6 +30,21 @@
       "Budget": 0,
       "Active": true,
       "SubActivities": []
+    },
+    {
+      "Code": "tmp-code",
+      "Owner": "kowalski",
+      "Name": "tmp",
+      "Budget": 10,
+      "Active": true,
+      "SubActivities": [
+        {
+          "Code": "ok"
+        },
+        {
+          "Code": "yes"
+        }
+      ]
     }
   ]
 }

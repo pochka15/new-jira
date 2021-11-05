@@ -47,15 +47,15 @@
                 <input type="hidden" asp-for="ActivityId" value="@activity.Id"/>
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
-                        <h5 class="card-title">@activity.ActivityCode</h5>
+                        <h5 class="card-title">@activity.ProjectCode</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Date: @activity.Date</h6>
                         <p class="card-text">Time: @(activity.Time)</p>
 
-                        <button type="submit" class="btn btn-primary" asp-action="EditActivityForm">
+                        <button type="submit" class="btn btn-primary" asp-controller="Project" asp-action="EditActivityForm">
                             Edit
                         </button>
 
-                        <button type="submit" asp-action="DeleteActivity" class="btn btn-danger">
+                        <button type="submit" asp-action="DeleteActivity" asp-controller="Project" class="btn btn-danger">
                             Delete
                         </button>
                     </div>

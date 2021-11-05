@@ -77,11 +77,33 @@ public class JsonReportService : IReportService {
         if (report == null) return new MonthStatistics {ProjectToTime = new Dictionary<string, int>()};
 
         var query = from activity in report.Activities
-            group activity by activity.ActivityCode
+            group activity by activity.ProjectCode
             into projectGroup
             select projectGroup;
         var projectToTime = query.ToDictionary(pGroup => pGroup.Key, CalcOverallTime());
         return new MonthStatistics {ProjectToTime = projectToTime};
+    }
+
+    public MonthReport AddActivity(ReportOrigin origin, AddActivityDto dto, int day) {
+        var report = GetMonthReport(origin)!;
+        var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
+        var id = GetNextId(report.Activities);
+
+        report.Activities.Add(new Activity {
+            Id = id,
+            Date = string.Join('/', origin.Year, origin.Month, day),
+            ProjectCode = dto.Project,
+            SubprojectCode = dto.SubprojectCode,
+            Time = dto.SpentTime,
+            Description = dto.Description
+        });
+        File.WriteAllText(path, JsonSerializer.Serialize(report));
+
+        return report;
+    }
+
+    private static int GetNextId(IEnumerable<Activity> activities) {
+        return activities.Select(activity => activity.Id).Prepend(0).Max() + 1;
     }
 
     private static Func<IGrouping<string, Activity>, int> CalcOverallTime() {
@@ -96,10 +118,10 @@ public class JsonReportService : IReportService {
     }
 
     private static void CopyDataFromDto(Activity activity, EditActivityDto dto) {
-        activity.ActivityCode = dto.Project;
+        activity.ProjectCode = dto.ProjectCode;
         activity.Description = dto.Description;
         activity.Time = dto.SpentTime;
-        activity.SubCode = dto.SubCategory;
+        activity.SubprojectCode = dto.SubprojectCode;
     }
 
     private static MonthReport DeserializeReport(string path) {

@@ -1,0 +1,12 @@
+namespace lab1.Models {
+public class SessionState {
+    public const string UserNameField = "UserName";
+    public const string YearField = "Year";
+    public const string MonthField = "Month";
+    public const string DayField = "Day";
+    public string? UserName { get; set; }
+    public int? Year { get; set; }
+    public int? Month { get; set; }
+    public int? Day { get; set; }
+}
+}

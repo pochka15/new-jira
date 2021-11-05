@@ -5,15 +5,15 @@
       "Id": 1,
       "Date": "2021-11-07",
       "code": "ARGUS-123",
-      "SubCode": "database",
-      "Time": 46,
+      "SubprojectCode": "kek",
+      "Time": 5,
       "Description": "data import"
     },
     {
       "Id": 2,
       "Date": "2021-11-07",
       "code": "OTHER",
-      "SubCode": "",
+      "SubprojectCode": "lol",
       "Time": 120,
       "Description": "picie kawy"
     },
@@ -21,7 +21,7 @@
       "Id": 5,
       "Date": "2021-11-12",
       "code": "ARGUS-123",
-      "SubCode": "other",
+      "SubprojectCode": null,
       "Time": 45,
       "Description": "project meeting"
     }

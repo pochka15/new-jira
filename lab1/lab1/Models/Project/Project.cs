@@ -8,6 +8,6 @@ public class Project {
     public string Name { get; set; }
     public float Budget { get; set; }
     public bool Active { get; set; }
-    [JsonPropertyName("SubActivities")] public List<SubProject> SubProjects { get; set; }
+    [JsonPropertyName("SubActivities")] public List<Subproject> Subprojects { get; set; }
 }
 }

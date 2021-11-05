@@ -12,7 +12,6 @@ public interface IReportService {
     int CalcOverallTime(IEnumerable<Activity> reports);
 
     MonthStatistics GetMonthStatistics(ReportOrigin origin);
-    // TODO(@pochka15): add activity
-    // it stores new activity -> some report
+    MonthReport AddActivity(ReportOrigin origin, AddActivityDto dto, int day);
 }
 }

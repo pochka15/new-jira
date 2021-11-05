@@ -5,9 +5,9 @@ public class Activity {
     public int Id { get; set; }
     public string Date { get; set; }
 
-    [JsonPropertyName("code")] public string ActivityCode { get; set; }
+    [JsonPropertyName("code")] public string ProjectCode { get; set; }
 
-    public string SubCode { get; set; }
+    public string SubprojectCode { get; set; }
     public int Time { get; set; }
     public string Description { get; set; }
 }

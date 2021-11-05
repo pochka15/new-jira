@@ -10,10 +10,6 @@ using Activity = System.Diagnostics.Activity;
 
 namespace lab1.Controllers {
 public class HomeController : Controller {
-    private const string UserNameField = "UserName";
-    private const string YearField = "Year";
-    private const string MonthField = "Month";
-    private const string DayField = "Day";
     private readonly IProjectsService _projectsService;
     private readonly IReportService _reportService;
 
@@ -30,10 +26,10 @@ public class HomeController : Controller {
 
     private SessionState SessionState {
         get {
-            var userName = HttpContext.Session.GetString(UserNameField);
-            var year = HttpContext.Session.GetString(YearField);
-            var month = HttpContext.Session.GetString(MonthField);
-            var day = HttpContext.Session.GetString(DayField);
+            var userName = HttpContext.Session.GetString(SessionState.UserNameField);
+            var year = HttpContext.Session.GetString(SessionState.YearField);
+            var month = HttpContext.Session.GetString(SessionState.MonthField);
+            var day = HttpContext.Session.GetString(SessionState.DayField);
 
             return new SessionState {
                 UserName = userName,
@@ -71,11 +67,11 @@ public class HomeController : Controller {
     }
 
     private SessionState UpdateState(int year, int month, int day) {
-        HttpContext.Session.SetString(YearField, year.ToString());
-        HttpContext.Session.SetString(MonthField, month.ToString());
-        HttpContext.Session.SetString(DayField, day.ToString());
+        HttpContext.Session.SetString(SessionState.YearField, year.ToString());
+        HttpContext.Session.SetString(SessionState.MonthField, month.ToString());
+        HttpContext.Session.SetString(SessionState.DayField, day.ToString());
         return new SessionState {
-            UserName = HttpContext.Session.GetString(UserNameField),
+            UserName = HttpContext.Session.GetString(SessionState.UserNameField),
             Year = year,
             Month = month,
             Day = day
@@ -96,107 +92,10 @@ public class HomeController : Controller {
         return RedirectToAction("Index");
     }
 
-    public IActionResult MonthStatistics(int? year, int? month) {
-        var state = SessionState;
-        var y = year ?? state.Year!.Value;
-        var m = month ?? state.Month!.Value;
-        var statistics = _reportService.GetMonthStatistics(
-            new ReportOrigin {Year = y, Month = m, UserName = state.UserName});
-
-        var model = new MonthStatisticsViewModel {
-            ProjectToTime = statistics.ProjectToTime,
-            Year = y,
-            Month = m,
-            UserName = state.UserName
-        };
-        return View(model);
-    }
-
     [HttpPost]
     public IActionResult ChangeUser(string userName) {
-        HttpContext.Session.SetString(UserNameField, userName);
+        HttpContext.Session.SetString(SessionState.UserNameField, userName);
         return RedirectToAction("Index");
     }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult EditActivity(
-        int activityId,
-        ReportOrigin reportOrigin,
-        string project,
-        string subCategory,
-        int spentTime,
-        string description) {
-        var dto = new EditActivityDto {
-            Id = activityId,
-            Description = description,
-            Project = project,
-            SpentTime = spentTime,
-            SubCategory = subCategory,
-        };
-
-        _reportService.EditActivity(reportOrigin, dto);
-        return RedirectToAction("Index");
-    }
-
-    /// <summary>
-    /// Edit activity form
-    /// </summary>
-    /// <param name="activityId">activity id</param>
-    /// <param name="reportOrigin">report origin</param>
-    /// <returns>A view containing the edit activity form</returns>
-    [HttpPost]
-    public IActionResult EditActivityForm(int activityId, ReportOrigin reportOrigin) {
-        var report = _reportService.GetMonthReport(reportOrigin);
-        var activity = report
-            ?.Activities.Find(it => it.Id == activityId);
-        if (activity == null) return View();
-        var model = new EditActivityViewModel {
-            ActivityId = activityId,
-            ReportOrigin = reportOrigin,
-            Description = activity.Description,
-            Project = activity.ActivityCode,
-            SpentTime = activity.Time,
-            SubCategory = activity.SubCode
-        };
-        return View(model);
-    }
-
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult DeleteActivity(int activityId, ReportOrigin reportOrigin) {
-        _reportService.DeleteActivityMatching(
-            reportOrigin,
-            it => it.Id == activityId
-        );
-        return RedirectToAction("Index");
-    }
-
-    [HttpGet]
-    public IActionResult CreateProject() {
-        return View();
-    }
-
-
-    // TODO(@pochka15): impr: do smth when there already exists some project
-    [HttpPost]
-    public IActionResult CreateProject(string projectName, string code, int? budget, string? subProjects) {
-        var state = SessionState;
-        _projectsService.CreateProject(new CreateProjectDto {
-            Budget = budget ?? 0,
-            Code = code,
-            Manager = state.UserName,
-            ProjectName = projectName,
-            SubProjects = subProjects ?? ""
-        });
-        return RedirectToAction("Index", "Menu");
-    }
-}
-
-public class SessionState {
-    public string? UserName { get; set; }
-    public int? Year { get; set; }
-    public int? Month { get; set; }
-    public int? Day { get; set; }
 }
 }

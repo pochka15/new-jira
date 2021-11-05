@@ -28,16 +28,16 @@ public class JsonProjectsService : IProjectsService {
         var project = projects.FirstOrDefault(p => p.Code == dto.Code);
         if (project != null) return project;
 
-        var split = dto.SubProjects.Split(
+        var split = dto.SubprojectCodes.Split(
             ',',
             StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-        var subProjects = (from code in split select new SubProject {Code = code}).ToList();
+        var subprojects = (from code in split select new Subproject {Code = code}).ToList();
         project = new Project {
             Name = dto.ProjectName,
             Code = dto.Code,
             Active = true,
             Manager = dto.Manager,
-            SubProjects = subProjects,
+            Subprojects = subprojects,
             Budget = dto.Budget
         };
         projects.Add(project);
