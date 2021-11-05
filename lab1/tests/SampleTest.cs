@@ -1,3 +1,4 @@
+using lab1.Models;
 using lab1.Services;
 using Xunit;
 using Xunit.Abstractions;
@@ -13,9 +14,9 @@ public class SampleTest {
     [Fact]
     public void CorrectActivityReturned() {
         // TODO(@pochka15): take root from env
-        var dataRoot = "";
+        const string dataRoot = "";
         Assert.Equal("Argus",
-            new JsonProjectsService(dataRoot)
+            new JsonProjectService(new DataPathSrc(dataRoot), null)
                 .GetProjectByCode("ARGUS-123")
                 ?.Name);
     }

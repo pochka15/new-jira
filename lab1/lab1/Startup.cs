@@ -1,4 +1,5 @@
 using System.IO;
+using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -18,13 +19,11 @@ public class Startup {
     public IConfiguration Configuration { get; }
 
     public void ConfigureServices(IServiceCollection services) {
-        var root = Path.Combine(_environment.WebRootPath, "data");
-        services.AddControllersWithViews()
-            .AddRazorRuntimeCompilation();
-        services.AddTransient<IProjectsService>(_ =>
-            new JsonProjectsService(root));
-        services.AddTransient<IReportService>(_ =>
-            new JsonReportService(root));
+        var dataPath = Path.Combine(_environment.WebRootPath, "data");
+        services.AddSingleton(new DataPathSrc(dataPath));
+        services.AddControllersWithViews().AddRazorRuntimeCompilation();
+        services.AddTransient<IProjectService, JsonProjectService>();
+        services.AddTransient<IReportService, JsonReportService>();
 
         services.AddDistributedMemoryCache();
 

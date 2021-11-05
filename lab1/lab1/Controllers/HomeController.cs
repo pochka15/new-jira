@@ -10,12 +10,10 @@ using Activity = System.Diagnostics.Activity;
 
 namespace lab1.Controllers {
 public class HomeController : Controller {
-    private readonly IProjectsService _projectsService;
     private readonly IReportService _reportService;
 
-    public HomeController(IReportService reportService, IProjectsService projectsService) {
+    public HomeController(IReportService reportService) {
         _reportService = reportService;
-        _projectsService = projectsService;
     }
 
     private static DayReport BlankReport =>

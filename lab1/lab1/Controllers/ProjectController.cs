@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace lab1.Controllers {
 public class ProjectController : Controller {
-    private readonly IProjectsService _projectsService;
+    private readonly IProjectService _projectService;
     private readonly IReportService _reportService;
 
-    public ProjectController(IReportService reportService, IProjectsService projectsService) {
+    public ProjectController(IReportService reportService, IProjectService projectService) {
         _reportService = reportService;
-        _projectsService = projectsService;
+        _projectService = projectService;
     }
 
     private SessionState SessionState {
@@ -48,7 +48,7 @@ public class ProjectController : Controller {
             SubprojectCode = subprojectCode,
         };
 
-        _reportService.EditActivity(reportOrigin, dto);
+        _projectService.EditActivity(reportOrigin, dto);
         return RedirectToAction("Index", "Home");
     }
 
@@ -94,7 +94,7 @@ public class ProjectController : Controller {
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteActivity(int activityId, ReportOrigin reportOrigin) {
-        _reportService.DeleteActivityMatching(
+        _projectService.DeleteActivityMatching(
             reportOrigin,
             it => it.Id == activityId
         );
@@ -128,7 +128,7 @@ public class ProjectController : Controller {
             Description = description ?? "",
             Day = state.Day.Value
         };
-        _reportService.AddActivity(origin, addActivityDto);
+        _projectService.AddActivity(origin, addActivityDto);
 #pragma warning restore 8629
         return RedirectToAction("Index", "Home");
     }
@@ -137,7 +137,7 @@ public class ProjectController : Controller {
     [HttpPost]
     public IActionResult CreateProject(string projectName, string code, int? budget, string? subprojectCodes) {
         var state = SessionState;
-        _projectsService.CreateProject(new CreateProjectDto {
+        _projectService.CreateProject(new CreateProjectDto {
             Budget = budget ?? 0,
             Code = code,
             Manager = state.UserName,
