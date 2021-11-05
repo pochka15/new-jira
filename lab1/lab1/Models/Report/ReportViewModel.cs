@@ -8,5 +8,6 @@ public class ReportViewModel {
     public EntryDescription EntryDescription { get; set; }
     public ChangeDateForm ChangeDateForm { get; set; }
     public int OverallTime { get; set; }
+    public string UserName { get; set; }
 }
 }
