@@ -68,7 +68,7 @@ public class HomeController : Controller {
             Frozen = report.Frozen,
             Origin = origin,
             ChangeDateForm = new ChangeDateForm {Date = date},
-            OverallTime = _reportService.CalcOverallTime(report.Activities),
+            OverallTime = IReportService.CalcOverallTime(report.Activities),
             UserName = state.UserName
         };
         return View(model);

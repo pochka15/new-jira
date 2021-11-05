@@ -5,7 +5,8 @@
 }
 
 <div>
-    <form method="post" asp-action="UpdateCost" asp-route-code="@Model.ProjectCode">
+    <form method="post" asp-action="UpdateCost">
+        @Html.HiddenFor(m => m.ProjectCode)
         <div class="input-group mb-3">
             <span class="input-group-text" id="Cost">Cost</span>
             <input asp-for="Cost" class="form-control" aria-label="Sizing example input" aria-describedby="Cost">
@@ -17,4 +18,7 @@
             Update
         </button>
     </form>
+    <div class="row col">
+        <h2>Left budget: @Model.LeftBudget</h2>
+    </div>
 </div>

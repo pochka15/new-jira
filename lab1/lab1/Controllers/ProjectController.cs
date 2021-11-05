@@ -31,24 +31,22 @@ public class ProjectController : Controller {
         }
     }
 
-
-    [Route("[controller]/{code}")]
     [HttpGet]
     public IActionResult Index(string code) {
         var project = _projectService.GetProjectByCode(code);
         return View(new ProjectViewModel {
             Cost = project!.Cost,
             ProjectName = project.Name,
-            ProjectCode = code
+            ProjectCode = code,
+            LeftBudget = _projectService.CalcLeftBudget(code)
         });
     }
 
-    [Route("[controller]/{code}/[action]")]
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public IActionResult UpdateCost(string code, int cost) {
-        _projectService.UpdateCost(code, cost);
-        return RedirectToAction("Index", new {code});
+    public IActionResult UpdateCost(string projectCode, int cost) {
+        _projectService.UpdateCost(projectCode, cost);
+        return Index(projectCode);
     }
 
     [HttpPost]
