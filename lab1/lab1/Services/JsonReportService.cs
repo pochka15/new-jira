@@ -50,14 +50,11 @@ public class JsonReportService : IReportService {
 
     public MonthStatistics GetMonthStatistics(ReportOrigin origin) {
         var report = GetMonthReport(origin);
-        if (report == null) return new MonthStatistics {ProjectToTime = new Dictionary<string, int>()};
-
-        var query = from activity in report.Activities
-            group activity by activity.ProjectCode
-            into projectGroup
-            select projectGroup;
-        var projectToTime = query.ToDictionary(pGroup => pGroup.Key, CalcOverallTime());
-        return new MonthStatistics {ProjectToTime = projectToTime};
+        if (report == null) return new MonthStatistics();
+        return new MonthStatistics {
+            ProjectToTime = BuildProjectToTime(report),
+            ProjectToAcceptedTime = BuildProjectToAcceptedTime(report)
+        };
     }
 
     public MonthReport CreateBlankReport(ReportOrigin origin) {
@@ -68,15 +65,39 @@ public class JsonReportService : IReportService {
         report = new MonthReport {
             Activities = new List<Activity>(),
             Frozen = false,
-            AcceptedActivities = new List<ActivityTime>()
+            AcceptedActivities = new List<ProjectTime>()
         };
         File.WriteAllText(path, JsonSerializer.Serialize(report));
         return report;
     }
 
+    public void LockMonth(ReportOrigin origin) {
+        var report = GetMonthReport(origin)!;
+        report.Frozen = true;
+        var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
+        File.WriteAllText(path, JsonSerializer.Serialize(report));
+    }
+
+    private static Dictionary<string, int> BuildProjectToAcceptedTime(MonthReport report) {
+        var groups = from activity in report.AcceptedActivities
+            group activity by activity.ProjectCode
+            into projectGroup
+            select projectGroup;
+        return groups.ToDictionary(
+            it => it.Key,
+            gr => (from projectTime in gr select projectTime.Time).Sum());
+    }
+
+    private static Dictionary<string, int> BuildProjectToTime(MonthReport report) {
+        var groups = from activity in report.Activities
+            group activity by activity.ProjectCode
+            into projectGroup
+            select projectGroup;
+        return groups.ToDictionary(pGroup => pGroup.Key, CalcOverallTime());
+    }
+
     private static Func<IGrouping<string, Activity>, int> CalcOverallTime() {
-        return pGroup
-            => (from it in pGroup select it.Time).Sum();
+        return gr => (from it in gr select it.Time).Sum();
     }
 
     public static string GetReportFileName(ReportOrigin origin) {

@@ -26,6 +26,7 @@
             <th scope="col">#</th>
             <th scope="col">Project</th>
             <th scope="col">Overall time</th>
+            <th scope="col">Accepted time</th>
         </tr>
         </thead>
         <tbody>
@@ -35,8 +36,13 @@
                 <th scope="row">
                     @i
                 </th>
-                <td>@project </td>
-                <td>@time </td>
+                <td>@project</td>
+                <td>@time</td>
+                <td>
+                    @(Model.ProjectToAcceptedTime.TryGetValue(project, out var acceptedTime)
+                        ? acceptedTime.ToString()
+                        : "❌")
+                </td>
                 @{ i++; }
             </tr>
         }

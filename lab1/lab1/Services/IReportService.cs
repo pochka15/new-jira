@@ -9,5 +9,6 @@ public interface IReportService {
     int CalcOverallTime(IEnumerable<Activity> activities);
     MonthStatistics GetMonthStatistics(ReportOrigin origin);
     public MonthReport CreateBlankReport(ReportOrigin origin);
+    void LockMonth(ReportOrigin origin);
 }
 }

@@ -46,18 +46,21 @@
                 <input type="hidden" asp-for="ReportOrigin.UserName" value="@(Model.Origin.UserName)"/>
                 <input type="hidden" asp-for="ActivityId" value="@activity.Id"/>
                 <div class="card" style="width: 18rem;">
-                    <div class="card-body">
+                    <div class="card-body @(Model.Frozen ? "bg-light" : "bg-white")">
                         <h5 class="card-title">@activity.ProjectCode</h5>
                         <h6 class="card-subtitle mb-2 text-muted">Date: @activity.Date</h6>
                         <p class="card-text">Time: @(activity.Time)</p>
+                        <i>@activity.Description</i>
 
-                        <button type="submit" class="btn btn-primary" asp-controller="Project" asp-action="EditActivityForm">
-                            Edit
-                        </button>
+                        @if (!Model.Frozen) {
+                            <button type="submit" class="btn btn-primary" asp-controller="Project" asp-action="EditActivityForm">
+                                Edit
+                            </button>
 
-                        <button type="submit" asp-action="DeleteActivity" asp-controller="Project" class="btn btn-danger">
-                            Delete
-                        </button>
+                            <button type="submit" asp-action="DeleteActivity" asp-controller="Project" class="btn btn-danger">
+                                Delete
+                            </button>
+                        }
                     </div>
                 </div>
             </form>

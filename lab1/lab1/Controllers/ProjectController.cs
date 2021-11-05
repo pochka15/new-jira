@@ -84,6 +84,7 @@ public class ProjectController : Controller {
 
         var model = new MonthStatisticsViewModel {
             ProjectToTime = statistics.ProjectToTime,
+            ProjectToAcceptedTime = statistics.ProjectToAcceptedTime,
             Year = y,
             Month = m,
             UserName = state.UserName

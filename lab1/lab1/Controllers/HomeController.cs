@@ -38,6 +38,16 @@ public class HomeController : Controller {
         }
     }
 
+    public IActionResult LockMonth() {
+        var state = SessionState;
+        _reportService.LockMonth(new ReportOrigin {
+            UserName = state.UserName,
+            Year = state.Year!.Value,
+            Month = state.Month!.Value
+        });
+        return RedirectToAction("Index", "Home");
+    }
+
     public IActionResult Index() {
         var state = SessionState;
         // default magic constants

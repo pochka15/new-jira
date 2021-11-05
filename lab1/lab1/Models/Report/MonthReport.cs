@@ -7,6 +7,6 @@ public class MonthReport {
 
     [JsonPropertyName("Entries")] public List<Activity> Activities { get; set; }
 
-    [JsonPropertyName("Accepted")] public List<ActivityTime> AcceptedActivities { get; set; }
+    [JsonPropertyName("Accepted")] public List<ProjectTime> AcceptedActivities { get; set; }
 }
 }
