@@ -1,9 +1,8 @@
 namespace lab1.Models {
-public class AddActivityDto {
+public class AddActivityViewModel {
     public string ProjectCode { get; set; }
     public string SubprojectCode { get; set; }
     public int SpentTime { get; set; }
     public string Description { get; set; }
-    public int Day { get; set; }
 }
 }

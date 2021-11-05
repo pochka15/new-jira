@@ -1,3 +1,4 @@
+#nullable enable
 namespace lab1.Models {
 public class SessionState {
     public const string UserNameField = "UserName";
@@ -8,5 +9,7 @@ public class SessionState {
     public int? Year { get; set; }
     public int? Month { get; set; }
     public int? Day { get; set; }
+
+    public bool HasNullFields => UserName == null || Year == null || Month == null || Day == null;
 }
 }

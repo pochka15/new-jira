@@ -68,8 +68,8 @@ public class JsonReportService : IReportService {
         return report;
     }
 
-    public int CalcOverallTime(IEnumerable<Activity> reports) {
-        return (from activity in reports select activity.Time).Sum();
+    public int CalcOverallTime(IEnumerable<Activity> activities) {
+        return (from activity in activities select activity.Time).Sum();
     }
 
     public MonthStatistics GetMonthStatistics(ReportOrigin origin) {
@@ -84,21 +84,35 @@ public class JsonReportService : IReportService {
         return new MonthStatistics {ProjectToTime = projectToTime};
     }
 
-    public MonthReport AddActivity(ReportOrigin origin, AddActivityDto dto, int day) {
-        var report = GetMonthReport(origin)!;
+    public MonthReport AddActivity(ReportOrigin origin, AddActivityDto dto) {
+        var report = GetMonthReport(origin) ?? CreateBlankReport(origin);
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
         var id = GetNextId(report.Activities);
 
         report.Activities.Add(new Activity {
             Id = id,
-            Date = string.Join('/', origin.Year, origin.Month, day),
-            ProjectCode = dto.Project,
+            Date = string.Join('/', origin.Year, origin.Month, dto.Day),
+            ProjectCode = dto.ProjectCode,
             SubprojectCode = dto.SubprojectCode,
             Time = dto.SpentTime,
             Description = dto.Description
         });
         File.WriteAllText(path, JsonSerializer.Serialize(report));
 
+        return report;
+    }
+
+    private MonthReport CreateBlankReport(ReportOrigin origin) {
+        var report = GetMonthReport(origin);
+        if (report != null) return report;
+
+        var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
+        report = new MonthReport {
+            Activities = new List<Activity>(),
+            Frozen = false,
+            AcceptedActivities = new List<ActivityTime>()
+        };
+        File.WriteAllText(path, JsonSerializer.Serialize(report));
         return report;
     }
 

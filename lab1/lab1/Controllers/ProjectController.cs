@@ -1,4 +1,5 @@
 #nullable enable
+using System.Diagnostics;
 using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Http;
@@ -103,6 +104,33 @@ public class ProjectController : Controller {
     [HttpGet]
     public IActionResult CreateProject() {
         return View();
+    }
+
+    [HttpGet]
+    public IActionResult AddActivity() {
+        return View();
+    }
+
+    [HttpPost]
+    public IActionResult AddActivity(string projectCode, string? subprojectCode, int spentTime, string? description) {
+        var state = SessionState;
+#pragma warning disable 8629
+        Debug.Assert(!state.HasNullFields);
+        var origin = new ReportOrigin {
+            UserName = state.UserName,
+            Year = state.Year.Value,
+            Month = state.Month.Value
+        };
+        var addActivityDto = new AddActivityDto {
+            ProjectCode = projectCode,
+            SubprojectCode = subprojectCode ?? "",
+            SpentTime = spentTime,
+            Description = description ?? "",
+            Day = state.Day.Value
+        };
+        _reportService.AddActivity(origin, addActivityDto);
+#pragma warning restore 8629
+        return RedirectToAction("Index", "Home");
     }
 
     // TODO(@pochka15): impr: do smth when there already exists some project

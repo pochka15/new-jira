@@ -1,0 +1,34 @@
+@model AddActivityViewModel
+
+@{
+    ViewData["Title"] = "Add activity";
+}
+
+<div>
+    <form method="post">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="ProjectCode">Project code</span>
+            <input asp-for="ProjectCode" class="form-control" aria-label="Sizing example input" aria-describedby="ProjectCode">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="SubprojectCode">Subproject code</span>
+            <input asp-for="SubprojectCode" class="form-control" aria-label="Sizing example input" aria-describedby="SubprojectCode">
+        </div>
+
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="SpentTime">SpentTime</span>
+            <input asp-for="SpentTime" class="form-control" aria-label="Sizing example input" aria-describedby="SpentTime">
+        </div>
+
+        <span class="input-group-text">Description</span>
+        <textarea asp-for="Description" class="form-control" aria-label="Description"></textarea>
+        <button
+            type="submit"
+            asp-action="AddActivity"
+            class="btn btn-primary">
+            Submit
+        </button>
+    </form>
+
+</div>

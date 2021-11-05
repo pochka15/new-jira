@@ -9,9 +9,8 @@ public interface IReportService {
     MonthReport? GetMonthReport(ReportOrigin origin);
     MonthReport DeleteActivityMatching(ReportOrigin reportOrigin, Predicate<Activity> pred);
     MonthReport EditActivity(ReportOrigin reportOrigin, EditActivityDto dto);
-    int CalcOverallTime(IEnumerable<Activity> reports);
-
+    MonthReport AddActivity(ReportOrigin origin, AddActivityDto dto);
+    int CalcOverallTime(IEnumerable<Activity> activities);
     MonthStatistics GetMonthStatistics(ReportOrigin origin);
-    MonthReport AddActivity(ReportOrigin origin, AddActivityDto dto, int day);
 }
 }
