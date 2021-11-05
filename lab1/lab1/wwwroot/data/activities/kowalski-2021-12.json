@@ -1,30 +1,30 @@
 {
-  "frozen": false,
-  "entries": [
+  "Frozen": false,
+  "Entries": [
     {
-      "id": 1,
-      "date": "2021-11-07",
+      "Id": 1,
+      "Date": "2021-11-07",
       "code": "ARGUS-123",
-      "subCode": "database",
-      "time": 45,
-      "description": "data import"
+      "SubCode": "database",
+      "Time": 46,
+      "Description": "data import"
     },
     {
-      "id": 2,
-      "date": "2021-11-07",
+      "Id": 2,
+      "Date": "2021-11-07",
       "code": "OTHER",
-      "subCode": "",
-      "time": 120,
-      "description": "picie kawy"
+      "SubCode": "",
+      "Time": 120,
+      "Description": "picie kawy"
     },
     {
-      "id": 5,
-      "date": "2021-11-12",
+      "Id": 5,
+      "Date": "2021-11-12",
       "code": "ARGUS-123",
-      "subCode": "other",
-      "time": 45,
-      "description": "project meeting"
+      "SubCode": "other",
+      "Time": 45,
+      "Description": "project meeting"
     }
   ],
-  "accepted": []
+  "Accepted": []
 }

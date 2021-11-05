@@ -1,27 +1,35 @@
 {
   "activities": [
     {
-      "code": "ARGUS-123",
-      "manager": "nowak",
-      "name": "Argus",
-      "budget": 125,
-      "active": true,
-      "subActivities": [
+      "Code": "ARGUS-123",
+      "Owner": null,
+      "Name": "Argus",
+      "Budget": 125,
+      "Active": true,
+      "SubActivities": [
         {
-          "code": "database"
+          "Code": "database"
         },
         {
-          "code": "other"
+          "Code": "other"
         }
       ]
     },
     {
-      "code": "OTHER",
-      "manager": "smith",
-      "name": "Other",
-      "budget": -1,
-      "active": true,
-      "subActivities": []
+      "Code": "OTHER",
+      "Owner": null,
+      "Name": "Other",
+      "Budget": -1,
+      "Active": true,
+      "SubActivities": []
+    },
+    {
+      "Code": "tt",
+      "Owner": "kowalski",
+      "Name": "tt",
+      "Budget": 0,
+      "Active": true,
+      "SubActivities": []
     }
   ]
 }

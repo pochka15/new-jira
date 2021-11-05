@@ -1,0 +1,31 @@
+@model CreateProjectViewModel
+
+@{
+    ViewData["Title"] = "Create project";
+}
+
+<div>
+    <form asp-action="CreateProject">
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="ProjectName">Project name</span>
+            <input asp-for="ProjectName" class="form-control" aria-label="Sizing example input" aria-describedby="ProjectName">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="Code">Project code</span>
+            <input asp-for="Code" class="form-control" aria-label="Sizing example input" aria-describedby="Code">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="Budget">Budget</span>
+            <input asp-for="Budget" class="form-control" aria-label="Sizing example input" aria-describedby="Budget">
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="SubProjects">Sub projects</span>
+            <input asp-for="SubProjects" class="form-control" aria-label="Sizing example input" aria-describedby="SubProjects">
+        </div>
+        <button
+            type="submit"
+            class="btn btn-primary">
+            Create
+        </button>
+    </form>
+</div>

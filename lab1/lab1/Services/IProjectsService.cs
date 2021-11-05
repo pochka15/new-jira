@@ -2,7 +2,8 @@
 using lab1.Models;
 
 namespace lab1.Services {
-public interface IActivitiesService {
+public interface IProjectsService {
     Project? GetProjectByCode(string code);
+    Project CreateProject(CreateProjectDto dto);
 }
 }

@@ -15,7 +15,7 @@ public class SampleTest {
         // TODO(@pochka15): take root from env
         var dataRoot = "";
         Assert.Equal("Argus",
-            new JsonActivitiesService(dataRoot)
+            new JsonProjectsService(dataRoot)
                 .GetProjectByCode("ARGUS-123")
                 ?.Name);
     }

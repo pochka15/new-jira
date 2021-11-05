@@ -27,11 +27,11 @@ public class JsonReportService : IReportService {
         var report = query.FirstOrDefault();
 
         if (report == null) return null;
-        report.Entries.RemoveAll(it => DateTime.Parse(it.Date).Day != day);
+        report.Activities.RemoveAll(it => DateTime.Parse(it.Date).Day != day);
 
         return new DayReport {
             Frozen = report.Frozen,
-            Activities = report.Entries
+            Activities = report.Activities
         };
     }
 
@@ -44,22 +44,22 @@ public class JsonReportService : IReportService {
         return query.FirstOrDefault();
     }
 
-    public MonthReport DeleteEntryMatching(ReportOrigin origin, Predicate<Activity> pred) {
+    public MonthReport DeleteActivityMatching(ReportOrigin origin, Predicate<Activity> pred) {
         var report = GetMonthReport(origin)!;
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
 
-        report.Entries.RemoveAll(pred);
+        report.Activities.RemoveAll(pred);
         File.WriteAllText(path, JsonSerializer.Serialize(report));
 
         return report;
     }
 
-    public MonthReport EditEntry(ReportOrigin origin, EditActivityDto dto) {
+    public MonthReport EditActivity(ReportOrigin origin, EditActivityDto dto) {
         var report = GetMonthReport(origin)!;
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
 
-        foreach (var entry in report.Entries.Where(entry => entry.Id == dto.Id)) {
-            CopyDataFromDto(entry, dto);
+        foreach (var activity in report.Activities.Where(it => it.Id == dto.Id)) {
+            CopyDataFromDto(activity, dto);
             break;
         }
 
@@ -69,15 +69,15 @@ public class JsonReportService : IReportService {
     }
 
     public int CalcOverallTime(IEnumerable<Activity> reports) {
-        return (from entry in reports select entry.Time).Sum();
+        return (from activity in reports select activity.Time).Sum();
     }
 
     public MonthStatistics GetMonthStatistics(ReportOrigin origin) {
         var report = GetMonthReport(origin);
         if (report == null) return new MonthStatistics {ProjectToTime = new Dictionary<string, int>()};
 
-        var query = from entry in report.Entries
-            group entry by entry.ActivityCode
+        var query = from activity in report.Activities
+            group activity by activity.ActivityCode
             into projectGroup
             select projectGroup;
         var projectToTime = query.ToDictionary(pGroup => pGroup.Key, CalcOverallTime());
@@ -86,7 +86,7 @@ public class JsonReportService : IReportService {
 
     private static Func<IGrouping<string, Activity>, int> CalcOverallTime() {
         return pGroup
-            => (from entry in pGroup select entry.Time).Sum();
+            => (from it in pGroup select it.Time).Sum();
     }
 
     private static string GetReportFileName(ReportOrigin origin) {
@@ -95,11 +95,11 @@ public class JsonReportService : IReportService {
                + origin.Month + ".json";
     }
 
-    private static void CopyDataFromDto(Activity entry, EditActivityDto dto) {
-        entry.ActivityCode = dto.Project;
-        entry.Description = dto.Description;
-        entry.Time = dto.SpentTime;
-        entry.SubCode = dto.SubCategory;
+    private static void CopyDataFromDto(Activity activity, EditActivityDto dto) {
+        activity.ActivityCode = dto.Project;
+        activity.Description = dto.Description;
+        activity.Time = dto.SpentTime;
+        activity.SubCode = dto.SubCategory;
     }
 
     private static MonthReport DeserializeReport(string path) {

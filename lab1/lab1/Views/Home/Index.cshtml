@@ -8,7 +8,7 @@
     <div class="row row-bottom-margin">
         <div class="col">
             <button class="btn btn-primary">
-                Add entry
+                Add activity
             </button>
         </div>
         <div class="col">
@@ -39,17 +39,17 @@
         </div>
     </div>
     <div class="row col">
-        @foreach (var entry in Model.Entries) {
+        @foreach (var activity in Model.Activities) {
             <form method="post">
                 <input type="hidden" asp-for="ReportOrigin.Month" value="@(Model.Origin.Month)"/>
                 <input type="hidden" asp-for="ReportOrigin.Year" value="@(Model.Origin.Year)"/>
                 <input type="hidden" asp-for="ReportOrigin.UserName" value="@(Model.Origin.UserName)"/>
-                <input type="hidden" asp-for="ActivityId" value="@entry.Id"/>
+                <input type="hidden" asp-for="ActivityId" value="@activity.Id"/>
                 <div class="card" style="width: 18rem;">
                     <div class="card-body">
-                        <h5 class="card-title">@entry.ActivityCode</h5>
-                        <h6 class="card-subtitle mb-2 text-muted">Date: @entry.Date</h6>
-                        <p class="card-text">Time: @(entry.Time)</p>
+                        <h5 class="card-title">@activity.ActivityCode</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Date: @activity.Date</h6>
+                        <p class="card-text">Time: @(activity.Time)</p>
 
                         <button type="submit" class="btn btn-primary" asp-action="EditActivityForm">
                             Edit

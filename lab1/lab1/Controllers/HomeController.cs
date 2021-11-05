@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using lab1.Models;
 using lab1.Services;
@@ -12,10 +13,12 @@ public class HomeController : Controller {
     private const string YearField = "Year";
     private const string MonthField = "Month";
     private const string DayField = "Day";
+    private readonly IProjectsService _projectsService;
     private readonly IReportService _reportService;
 
-    public HomeController(IReportService reportService) {
+    public HomeController(IReportService reportService, IProjectsService projectsService) {
         _reportService = reportService;
+        _projectsService = projectsService;
     }
 
     private static DayReport BlankReport =>
@@ -44,7 +47,7 @@ public class HomeController : Controller {
         var state = SessionState;
         state.Year ??= 2021;
         state.Month ??= 12;
-        state.Day ??= 1;
+        state.Day ??= 7;
 
         var origin = new ReportOrigin {
             Month = state.Month.Value,
@@ -54,7 +57,7 @@ public class HomeController : Controller {
         var report = _reportService.GetDayReport(origin, state.Day.Value) ?? BlankReport;
         var date = DateTime.Parse(string.Join('/', state.Year.Value, state.Month.Value, state.Day.Value));
         var model = new ReportViewModel {
-            Entries = report.Activities,
+            Activities = report.Activities,
             Frozen = report.Frozen,
             Origin = origin,
             ChangeDateForm = new ChangeDateForm {Date = date},
@@ -119,7 +122,7 @@ public class HomeController : Controller {
             SubCategory = subCategory,
         };
 
-        _reportService.EditEntry(reportOrigin, dto);
+        _reportService.EditActivity(reportOrigin, dto);
         return RedirectToAction("Index");
     }
 
@@ -132,16 +135,16 @@ public class HomeController : Controller {
     [HttpPost]
     public IActionResult EditActivityForm(int activityId, ReportOrigin reportOrigin) {
         var report = _reportService.GetMonthReport(reportOrigin);
-        var entry = report
-            ?.Entries.Find(it => it.Id == activityId);
-        if (entry == null) return View();
+        var activity = report
+            ?.Activities.Find(it => it.Id == activityId);
+        if (activity == null) return View();
         var model = new EditActivityViewModel {
             ActivityId = activityId,
             ReportOrigin = reportOrigin,
-            Description = entry.Description,
-            Project = entry.ActivityCode,
-            SpentTime = entry.Time,
-            SubCategory = entry.SubCode
+            Description = activity.Description,
+            Project = activity.ActivityCode,
+            SpentTime = activity.Time,
+            SubCategory = activity.SubCode
         };
         return View(model);
     }
@@ -149,16 +152,36 @@ public class HomeController : Controller {
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult DeleteActivity(int activityId, ReportOrigin reportOrigin) {
-        _reportService.DeleteEntryMatching(
+        _reportService.DeleteActivityMatching(
             reportOrigin,
-            entry => entry.Id == activityId
+            it => it.Id == activityId
         );
         return RedirectToAction("Index");
+    }
+
+    [HttpGet]
+    public IActionResult CreateProject() {
+        return View();
+    }
+
+
+    // TODO(@pochka15): impr: do smth when there already exists some project
+    [HttpPost]
+    public IActionResult CreateProject(string projectName, string code, int? budget, string? subProjects) {
+        var state = SessionState;
+        _projectsService.CreateProject(new CreateProjectDto {
+            Budget = budget ?? 0,
+            Code = code,
+            Manager = state.UserName,
+            ProjectName = projectName,
+            SubProjects = subProjects ?? ""
+        });
+        return RedirectToAction("Index", "Menu");
     }
 }
 
 public class SessionState {
-    public string UserName { get; set; }
+    public string? UserName { get; set; }
     public int? Year { get; set; }
     public int? Month { get; set; }
     public int? Day { get; set; }

@@ -21,8 +21,8 @@ public class Startup {
         var root = Path.Combine(_environment.WebRootPath, "data");
         services.AddControllersWithViews()
             .AddRazorRuntimeCompilation();
-        services.AddTransient<IActivitiesService>(_ =>
-            new JsonActivitiesService(root));
+        services.AddTransient<IProjectsService>(_ =>
+            new JsonProjectsService(root));
         services.AddTransient<IReportService>(_ =>
             new JsonReportService(root));
 
