@@ -8,7 +8,5 @@ namespace lab1.Models {
 public class ChangeDateForm {
     [DisplayFormat(ApplyFormatInEditMode = true, DataFormatString = "{0:yyyy-MM-ddT00:00}")]
     public DateTime Date { get; set; }
-
-    public string UserName { get; set; }
 }
 }

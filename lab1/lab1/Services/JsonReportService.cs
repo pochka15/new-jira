@@ -31,7 +31,7 @@ public class JsonReportService : IReportService {
 
         return new DayReport {
             Frozen = report.Frozen,
-            Entries = report.Entries
+            Activities = report.Entries
         };
     }
 
@@ -44,7 +44,7 @@ public class JsonReportService : IReportService {
         return query.FirstOrDefault();
     }
 
-    public MonthReport DeleteEntryMatching(ReportOrigin origin, Predicate<ReportEntry> pred) {
+    public MonthReport DeleteEntryMatching(ReportOrigin origin, Predicate<Activity> pred) {
         var report = GetMonthReport(origin)!;
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
 
@@ -54,7 +54,7 @@ public class JsonReportService : IReportService {
         return report;
     }
 
-    public MonthReport EditEntry(ReportOrigin origin, EditEntryDto dto) {
+    public MonthReport EditEntry(ReportOrigin origin, EditActivityDto dto) {
         var report = GetMonthReport(origin)!;
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
 
@@ -68,12 +68,14 @@ public class JsonReportService : IReportService {
         return report;
     }
 
-    public int CalcOverallTime(IEnumerable<ReportEntry> reports) {
+    public int CalcOverallTime(IEnumerable<Activity> reports) {
         return (from entry in reports select entry.Time).Sum();
     }
 
     public MonthStatistics GetMonthStatistics(ReportOrigin origin) {
-        var report = GetMonthReport(origin)!;
+        var report = GetMonthReport(origin);
+        if (report == null) return new MonthStatistics {ProjectToTime = new Dictionary<string, int>()};
+
         var query = from entry in report.Entries
             group entry by entry.ActivityCode
             into projectGroup
@@ -82,7 +84,7 @@ public class JsonReportService : IReportService {
         return new MonthStatistics {ProjectToTime = projectToTime};
     }
 
-    private static Func<IGrouping<string, ReportEntry>, int> CalcOverallTime() {
+    private static Func<IGrouping<string, Activity>, int> CalcOverallTime() {
         return pGroup
             => (from entry in pGroup select entry.Time).Sum();
     }
@@ -93,7 +95,7 @@ public class JsonReportService : IReportService {
                + origin.Month + ".json";
     }
 
-    private static void CopyDataFromDto(ReportEntry entry, EditEntryDto dto) {
+    private static void CopyDataFromDto(Activity entry, EditActivityDto dto) {
         entry.ActivityCode = dto.Project;
         entry.Description = dto.Description;
         entry.Time = dto.SpentTime;

@@ -16,7 +16,7 @@ public class SampleTest {
         var dataRoot = "";
         Assert.Equal("Argus",
             new JsonActivitiesService(dataRoot)
-                .GetActivityByCode("ARGUS-123")
+                .GetProjectByCode("ARGUS-123")
                 ?.Name);
     }
 }

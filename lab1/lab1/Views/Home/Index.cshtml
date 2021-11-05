@@ -1,7 +1,66 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model ReportViewModel
+
+@{
+    ViewData["Title"] = "Report";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+<div>
+    <div class="row row-bottom-margin">
+        <div class="col">
+            <button class="btn btn-primary">
+                Add entry
+            </button>
+        </div>
+        <div class="col">
+            <form asp-action="ChangeDate" method="get">
+                <input asp-for="ChangeDateForm.Date" class="row-bottom-margin">
+                <button type="submit" class="btn btn-primary">
+                    Change date
+                </button>
+            </form>
+        </div>
+        <div class="col">
+            <h2>
+                Overall time: @Model.OverallTime
+            </h2>
+        </div>
+    </div>
+    <div class="row row-bottom-margin">
+        <div class="col">
+            <form asp-action="ChangeUser">
+                <div class="input-group mb-3">
+                    <span class="input-group-text" id="UserName">User name</span>
+                    <input asp-for="UserName" class="form-control" aria-label="Sizing example input" aria-describedby="UserName">
+                </div>
+                <button type="submit" class="btn btn-primary">
+                    Change user
+                </button>
+            </form>
+        </div>
+    </div>
+    <div class="row col">
+        @foreach (var entry in Model.Entries) {
+            <form method="post">
+                <input type="hidden" asp-for="ReportOrigin.Month" value="@(Model.Origin.Month)"/>
+                <input type="hidden" asp-for="ReportOrigin.Year" value="@(Model.Origin.Year)"/>
+                <input type="hidden" asp-for="ReportOrigin.UserName" value="@(Model.Origin.UserName)"/>
+                <input type="hidden" asp-for="ActivityId" value="@entry.Id"/>
+                <div class="card" style="width: 18rem;">
+                    <div class="card-body">
+                        <h5 class="card-title">@entry.ActivityCode</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">Date: @entry.Date</h6>
+                        <p class="card-text">Time: @(entry.Time)</p>
+
+                        <button type="submit" class="btn btn-primary" asp-action="EditActivityForm">
+                            Edit
+                        </button>
+
+                        <button type="submit" asp-action="DeleteActivity" class="btn btn-danger">
+                            Delete
+                        </button>
+                    </div>
+                </div>
+            </form>
+        }
+    </div>
 </div>

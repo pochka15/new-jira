@@ -1,4 +1,4 @@
-@model EditEntryViewModel
+@model EditActivityViewModel
 
 @{
     ViewData["Title"] = "Edit entry";
@@ -6,10 +6,10 @@
 
 <div>
     <form method="post">
-        @Html.HiddenFor(m => m.EntryDescription.EntryId)
-        @Html.HiddenFor(m => m.EntryDescription.ReportOrigin.UserName)
-        @Html.HiddenFor(m => m.EntryDescription.ReportOrigin.Year)
-        @Html.HiddenFor(m => m.EntryDescription.ReportOrigin.Month)
+        @Html.HiddenFor(m => m.ActivityId)
+        @Html.HiddenFor(m => m.ReportOrigin.UserName)
+        @Html.HiddenFor(m => m.ReportOrigin.Year)
+        @Html.HiddenFor(m => m.ReportOrigin.Month)
 
         <div class="input-group mb-3">
             <span class="input-group-text" id="Project">Project</span>
@@ -30,7 +30,7 @@
         <textarea asp-for="Description" class="form-control" aria-label="Description"></textarea>
         <button
             type="submit"
-            asp-action="Edit"
+            asp-action="EditActivity"
             class="btn btn-primary">
             Submit
         </button>
