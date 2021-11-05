@@ -58,6 +58,15 @@ public class JsonProjectService : IProjectService {
         File.WriteAllText(path, JsonSerializer.Serialize(report));
     }
 
+    public void UpdateCost(string projectCode, int cost) {
+        var projects = GetAllProjects().ToList();
+        var project = projects.FirstOrDefault(it => it.Code == projectCode);
+        if (project != null) project.Cost = cost;
+
+        File.WriteAllText(Path.Combine(_dataRoot, "activities.json"),
+            JsonSerializer.Serialize(new ProjectsContainer {Projects = projects}));
+    }
+
 
     public Project? GetProjectByCode(string code) {
         return GetAllProjects().FirstOrDefault(it => it.Code == code);

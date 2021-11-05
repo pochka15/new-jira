@@ -9,5 +9,6 @@ public interface IProjectService {
     void DeleteActivityMatching(ReportOrigin reportOrigin, Predicate<Activity> pred);
     void EditActivity(ReportOrigin reportOrigin, EditActivityDto dto);
     void AddActivity(ReportOrigin origin, AddActivityDto dto);
+    void UpdateCost(string projectCode, int cost);
 }
 }

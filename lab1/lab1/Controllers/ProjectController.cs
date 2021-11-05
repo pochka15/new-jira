@@ -31,6 +31,26 @@ public class ProjectController : Controller {
         }
     }
 
+
+    [Route("[controller]/{code}")]
+    [HttpGet]
+    public IActionResult Index(string code) {
+        var project = _projectService.GetProjectByCode(code);
+        return View(new ProjectViewModel {
+            Cost = project!.Cost,
+            ProjectName = project.Name,
+            ProjectCode = code
+        });
+    }
+
+    [Route("[controller]/{code}/[action]")]
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public IActionResult UpdateCost(string code, int cost) {
+        _projectService.UpdateCost(code, cost);
+        return RedirectToAction("Index", new {code});
+    }
+
     [HttpPost]
     [ValidateAntiForgeryToken]
     public IActionResult EditActivity(

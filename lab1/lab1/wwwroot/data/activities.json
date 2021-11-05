@@ -6,6 +6,7 @@
       "Name": "Argus",
       "Budget": 125,
       "Active": true,
+      "Cost": 10,
       "SubActivities": [
         {
           "Code": "database"
@@ -21,30 +22,8 @@
       "Name": "Other",
       "Budget": -1,
       "Active": true,
+      "Cost": 20,
       "SubActivities": []
-    },
-    {
-      "Code": "tt",
-      "Owner": "kowalski",
-      "Name": "tt",
-      "Budget": 0,
-      "Active": true,
-      "SubActivities": []
-    },
-    {
-      "Code": "tmp-code",
-      "Owner": "kowalski",
-      "Name": "tmp",
-      "Budget": 10,
-      "Active": true,
-      "SubActivities": [
-        {
-          "Code": "ok"
-        },
-        {
-          "Code": "yes"
-        }
-      ]
     }
   ]
 }
