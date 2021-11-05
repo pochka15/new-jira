@@ -46,7 +46,7 @@ public class ProjectController : Controller {
     [ValidateAntiForgeryToken]
     public IActionResult UpdateCost(string projectCode, int cost) {
         _projectService.UpdateCost(projectCode, cost);
-        return Index(projectCode);
+        return RedirectToAction("Index", new {code = projectCode});
     }
 
     [HttpPost]
