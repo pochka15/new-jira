@@ -1,11 +1,13 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using lab1.Models;
+using Activity = lab1.Models.Activity;
 
 namespace lab1.Services {
 public class JsonProjectService : IProjectService {
@@ -23,6 +25,9 @@ public class JsonProjectService : IProjectService {
     }
 
     public void EditActivity(ReportOrigin origin, EditActivityDto dto) {
+        var isActive = GetProjectByCode(dto.ProjectCode)!.Active;
+        Debug.Assert(isActive);
+
         var report = _reportService.GetMonthReport(origin)!;
         var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
 
@@ -43,6 +48,9 @@ public class JsonProjectService : IProjectService {
     }
 
     public void AddActivity(ReportOrigin origin, AddActivityDto dto) {
+        var isActive = GetProjectByCode(dto.ProjectCode)!.Active;
+        Debug.Assert(isActive);
+
         var report = _reportService.GetMonthReport(origin) ?? _reportService.CreateBlankReport(origin);
         var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
         var id = GetNextId(report.Activities);
@@ -71,6 +79,12 @@ public class JsonProjectService : IProjectService {
         var project = GetProjectByCode(projectCode);
         if (project == null) return 0;
         return project.Budget - CalcOverallAcceptedTime(projectCode) * project.Cost;
+    }
+
+    public IEnumerable<Project> GetActiveProjects() {
+        return GetAllProjects()
+            .Where(it => it.Active)
+            .ToList();
     }
 
     public Project? GetProjectByCode(string code) {

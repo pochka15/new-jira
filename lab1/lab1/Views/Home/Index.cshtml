@@ -7,7 +7,7 @@
 <div>
     <div class="row row-bottom-margin">
         <div class="col">
-            <a class="btn btn-primary" asp-controller="Project" asp-action="AddActivity">
+            <a class="btn btn-primary" hidden="@(!Model.CanAddActivity)" asp-controller="Project" asp-action="AddActivity">
                 New activity
             </a>
         </div>

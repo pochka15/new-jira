@@ -50,6 +50,7 @@ public class HomeController : Controller {
 
     public IActionResult Index() {
         var state = SessionState;
+        var userIsLogged = state.UserName != null;
         // default magic constants
         if (state.Year == null) state = UpdateState(2021, 12, 7);
 
@@ -69,7 +70,8 @@ public class HomeController : Controller {
             Origin = origin,
             ChangeDateForm = new ChangeDateForm {Date = date},
             OverallTime = IReportService.CalcOverallTime(report.Activities),
-            UserName = state.UserName
+            UserName = state.UserName,
+            CanAddActivity = userIsLogged
         };
         return View(model);
     }

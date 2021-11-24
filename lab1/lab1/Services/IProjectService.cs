@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using System.Collections.Generic;
 using lab1.Models;
 
 namespace lab1.Services {
@@ -11,5 +12,6 @@ public interface IProjectService {
     void AddActivity(ReportOrigin origin, AddActivityDto dto);
     void UpdateCost(string projectCode, int cost);
     int CalcLeftBudget(string projectCode);
+    IEnumerable<Project> GetActiveProjects();
 }
 }

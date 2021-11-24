@@ -10,5 +10,6 @@ public class ReportViewModel {
     public ChangeDateForm ChangeDateForm { get; set; }
     public int OverallTime { get; set; }
     public string UserName { get; set; }
+    public bool CanAddActivity { get; set; }
 }
 }

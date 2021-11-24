@@ -1,5 +1,7 @@
 #nullable enable
 using System.Diagnostics;
+using System.Linq;
+using lab1.Mappers;
 using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Http;
@@ -88,7 +90,10 @@ public class ProjectController : Controller {
             Description = activity.Description,
             ProjectCode = activity.ProjectCode,
             SpentTime = activity.Time,
-            SubprojectCode = activity.SubprojectCode
+            SubprojectCode = activity.SubprojectCode,
+            Projects = _projectService.GetActiveProjects()
+                .Select(it => it.ToSelectItem())
+                .ToList()
         };
         return View(model);
     }
@@ -127,11 +132,20 @@ public class ProjectController : Controller {
 
     [HttpGet]
     public IActionResult AddActivity() {
-        return View();
+        var model = new AddActivityViewModel {
+            Projects = _projectService.GetActiveProjects()
+                .Select(it => it.ToSelectItem())
+                .ToList()
+        };
+        return View(model);
     }
 
     [HttpPost]
-    public IActionResult AddActivity(string projectCode, string? subprojectCode, int spentTime, string? description) {
+    public IActionResult AddActivity(
+        string projectCode,
+        string? subprojectCode,
+        int spentTime,
+        string? description) {
         var state = SessionState;
 #pragma warning disable 8629
         Debug.Assert(!state.HasNullFields);
