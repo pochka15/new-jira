@@ -1,7 +1,4 @@
 #nullable enable
-using System.Diagnostics;
-using System.Linq;
-using lab1.Mappers;
 using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Http;
@@ -51,53 +48,6 @@ public class ProjectController : Controller {
         return RedirectToAction("Index", new {code = projectCode});
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult EditActivity(
-        int activityId,
-        ReportOrigin reportOrigin,
-        string projectCode,
-        string subprojectCode,
-        int spentTime,
-        string description) {
-        var dto = new EditActivityDto {
-            Id = activityId,
-            Description = description,
-            ProjectCode = projectCode,
-            SpentTime = spentTime,
-            SubprojectCode = subprojectCode,
-        };
-
-        _projectService.EditActivity(reportOrigin, dto);
-        return RedirectToAction("Index", "Home");
-    }
-
-    /// <summary>
-    /// Edit activity form
-    /// </summary>
-    /// <param name="activityId">activity id</param>
-    /// <param name="reportOrigin">report origin</param>
-    /// <returns>A view containing the edit activity form</returns>
-    [HttpPost]
-    public IActionResult EditActivityForm(int activityId, ReportOrigin reportOrigin) {
-        var report = _reportService.GetMonthReport(reportOrigin);
-        var activity = report
-            ?.Activities.Find(it => it.Id == activityId);
-        if (activity == null) return View();
-        var model = new EditActivityViewModel {
-            ActivityId = activityId,
-            ReportOrigin = reportOrigin,
-            Description = activity.Description,
-            ProjectCode = activity.ProjectCode,
-            SpentTime = activity.Time,
-            SubprojectCode = activity.SubprojectCode,
-            Projects = _projectService.GetActiveProjects()
-                .Select(it => it.ToSelectItem())
-                .ToList()
-        };
-        return View(model);
-    }
-
     public IActionResult MonthStatistics(int? year, int? month) {
         var state = SessionState;
         var y = year ?? state.Year!.Value;
@@ -115,60 +65,14 @@ public class ProjectController : Controller {
         return View(model);
     }
 
-    [HttpPost]
-    [ValidateAntiForgeryToken]
-    public IActionResult DeleteActivity(int activityId, ReportOrigin reportOrigin) {
-        _projectService.DeleteActivityMatching(
-            reportOrigin,
-            it => it.Id == activityId
-        );
-        return RedirectToAction("Index", "Home");
-    }
-
     [HttpGet]
-    public IActionResult CreateProject() {
+    public IActionResult Create() {
         return View();
-    }
-
-    [HttpGet]
-    public IActionResult AddActivity() {
-        var model = new AddActivityViewModel {
-            Projects = _projectService.GetActiveProjects()
-                .Select(it => it.ToSelectItem())
-                .ToList()
-        };
-        return View(model);
-    }
-
-    [HttpPost]
-    public IActionResult AddActivity(
-        string projectCode,
-        string? subprojectCode,
-        int spentTime,
-        string? description) {
-        var state = SessionState;
-#pragma warning disable 8629
-        Debug.Assert(!state.HasNullFields);
-        var origin = new ReportOrigin {
-            UserName = state.UserName,
-            Year = state.Year.Value,
-            Month = state.Month.Value
-        };
-        var addActivityDto = new AddActivityDto {
-            ProjectCode = projectCode,
-            SubprojectCode = subprojectCode ?? "",
-            SpentTime = spentTime,
-            Description = description ?? "",
-            Day = state.Day.Value
-        };
-        _projectService.AddActivity(origin, addActivityDto);
-#pragma warning restore 8629
-        return RedirectToAction("Index", "Home");
     }
 
     // TODO(@pochka15): impr: do smth when there already exists some project
     [HttpPost]
-    public IActionResult CreateProject(string projectName, string code, int? budget, string? subprojectCodes) {
+    public IActionResult Create(string projectName, string code, int? budget, string? subprojectCodes) {
         var state = SessionState;
         _projectService.CreateProject(new CreateProjectDto {
             Budget = budget ?? 0,
