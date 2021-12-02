@@ -3,11 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace lab1.Models {
 public class Project {
-    public string Code { get; set; }
+    [JsonPropertyName("Code")] public string Id { get; set; }
     [JsonPropertyName("Owner")] public string Manager { get; set; }
     public string Name { get; set; }
     public int Budget { get; set; }
-    public bool Active { get; set; }
+    [JsonPropertyName("Active")] public bool IsActive { get; set; }
     public int Cost { get; set; }
     [JsonPropertyName("SubActivities")] public List<Subproject> Subprojects { get; set; }
 }

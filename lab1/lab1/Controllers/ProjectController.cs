@@ -40,7 +40,7 @@ public class ProjectController : Controller {
             ProjectCode = code,
             LeftBudget = _projectService.CalcLeftBudget(project),
             InitialBudget = project.Budget,
-            ProjectIsActive = project.Active,
+            ProjectIsActive = project.IsActive,
             ReportOriginsWithMeta = _reportService.GetReportOriginsWithMeta(code)
                 .OrderByDescending(it => it.Year)
                 .ThenByDescending(it => it.Month)

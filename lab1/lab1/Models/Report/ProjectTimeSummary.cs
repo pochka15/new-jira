@@ -7,6 +7,8 @@ public class ProjectTimeSummary {
         Time = time;
     }
 
+    public int Id { get; set; }
+
     [JsonPropertyName("Code")] public string ProjectCode { get; set; }
 
     public int Time { get; set; }

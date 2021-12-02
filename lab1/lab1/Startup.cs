@@ -1,8 +1,10 @@
 using System.IO;
 using lab1.Models;
+using lab1.Models.Data;
 using lab1.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -31,6 +33,13 @@ public class Startup {
             options.Cookie.HttpOnly = true;
             options.Cookie.IsEssential = true;
         });
+
+        services.AddDbContext<MainContext>(options =>
+            options.UseMySql(
+                ServerVersion.AutoDetect(
+                    Configuration.GetConnectionString("DefaultConnection"))));
+
+        services.AddDatabaseDeveloperPageExceptionFilter();
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

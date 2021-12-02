@@ -25,7 +25,7 @@ public class JsonProjectService : IProjectService {
     }
 
     public void EditActivity(ReportOrigin origin, EditActivityDto dto) {
-        var isActive = GetProjectByCode(dto.ProjectCode)!.Active;
+        var isActive = GetProjectByCode(dto.ProjectCode)!.IsActive;
         Debug.Assert(isActive);
 
         var report = _reportService.GetMonthReport(origin)!;
@@ -46,7 +46,7 @@ public class JsonProjectService : IProjectService {
     }
 
     public void AddActivity(ReportOrigin origin, AddActivityDto dto) {
-        var isActive = GetProjectByCode(dto.ProjectCode)!.Active;
+        var isActive = GetProjectByCode(dto.ProjectCode)!.IsActive;
         Debug.Assert(isActive);
 
         var report = _reportService.GetMonthReport(origin) ?? _reportService.CreateBlankReport(origin);
@@ -66,7 +66,7 @@ public class JsonProjectService : IProjectService {
 
     public void UpdateCost(string projectCode, int cost) {
         var projects = GetAllProjects().ToList();
-        var project = projects.FirstOrDefault(it => it.Code == projectCode);
+        var project = projects.FirstOrDefault(it => it.Id == projectCode);
         if (project != null) project.Cost = cost;
 
         File.WriteAllText(Path.Combine(_dataRoot, "activities.json"),
@@ -74,7 +74,7 @@ public class JsonProjectService : IProjectService {
     }
 
     public int CalcLeftBudget(Project project) {
-        return project.Budget - CalcOverallAcceptedTime(project.Code) * project.Cost;
+        return project.Budget - CalcOverallAcceptedTime(project.Id) * project.Cost;
     }
 
     public void AcceptTime(ReportOrigin origin, string projectCode, int time) {
@@ -94,8 +94,8 @@ public class JsonProjectService : IProjectService {
     public void CloseProject(string projectCode) {
         var projects = GetAllProjects().ToList();
         foreach (var p
-                 in projects.Where(p => p.Code == projectCode)) {
-            p.Active = false;
+                 in projects.Where(p => p.Id == projectCode)) {
+            p.IsActive = false;
             break;
         }
 
@@ -107,7 +107,7 @@ public class JsonProjectService : IProjectService {
 
     public IEnumerable<Project> GetActiveProjects() {
         return GetAllProjects()
-            .Where(it => it.Active)
+            .Where(it => it.IsActive)
             .ToList();
     }
 
@@ -118,22 +118,22 @@ public class JsonProjectService : IProjectService {
     }
 
     public Project? GetProjectByCode(string code) {
-        return GetAllProjects().FirstOrDefault(it => it.Code == code);
+        return GetAllProjects().FirstOrDefault(it => it.Id == code);
     }
 
     public Project CreateProject(CreateProjectDto dto) {
         var projects = GetAllProjects().ToList();
-        var project = projects.FirstOrDefault(p => p.Code == dto.Code);
+        var project = projects.FirstOrDefault(p => p.Id == dto.Code);
         if (project != null) return project;
 
         var split = dto.SubprojectCodes.Split(
             ',',
             StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries);
-        var subprojects = (from code in split select new Subproject {Code = code}).ToList();
+        var subprojects = (from code in split select new Subproject {Id = code}).ToList();
         project = new Project {
             Name = dto.ProjectName,
-            Code = dto.Code,
-            Active = true,
+            Id = dto.Code,
+            IsActive = true,
             Manager = dto.Manager,
             Subprojects = subprojects,
             Budget = dto.Budget
