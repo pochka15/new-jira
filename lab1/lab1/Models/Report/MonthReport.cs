@@ -3,10 +3,10 @@ using System.Text.Json.Serialization;
 
 namespace lab1.Models {
 public class MonthReport {
-    public bool Frozen { get; set; }
+    [JsonPropertyName("Frozen")] public bool IsFrozen { get; set; }
 
     [JsonPropertyName("Entries")] public List<Activity> Activities { get; set; }
 
-    [JsonPropertyName("Accepted")] public List<ProjectTime> AcceptedActivities { get; set; }
+    [JsonPropertyName("Accepted")] public List<ProjectTimeSummary> TimeSummaries { get; set; }
 }
 }

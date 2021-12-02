@@ -1,0 +1,17 @@
+@model ManagementModelView
+
+@{
+    ViewData["Title"] = "Management";
+}
+
+<div>
+    @foreach (var project in Model.Projects) {
+        <div class="row bottom-margin">
+            <div class="col">
+                <a asp-action="Index" class="btn btn-primary" asp-controller="Project" asp-route-code="@project.Code">
+                    @project.Name
+                </a>
+            </div>
+        </div>
+    }
+</div>

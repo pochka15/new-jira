@@ -29,8 +29,6 @@ public class JsonProjectService : IProjectService {
         Debug.Assert(isActive);
 
         var report = _reportService.GetMonthReport(origin)!;
-        var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
-
         foreach (var activity in report.Activities.Where(it => it.Id == dto.Id)) {
             CopyDataFromDto(activity, dto);
             break;
@@ -87,6 +85,12 @@ public class JsonProjectService : IProjectService {
             .ToList();
     }
 
+    public IEnumerable<Project> GetManagedProjects(string manager) {
+        return GetAllProjects()
+            .Where(it => it.Manager == manager)
+            .ToList();
+    }
+
     public Project? GetProjectByCode(string code) {
         return GetAllProjects().FirstOrDefault(it => it.Code == code);
     }
@@ -118,7 +122,7 @@ public class JsonProjectService : IProjectService {
 
     private int CalcOverallAcceptedTime(string projectCode) {
         return _reportService.GetAllReports()
-            .SelectMany(it => it.AcceptedActivities)
+            .SelectMany(it => it.TimeSummaries)
             .Where(it => it.ProjectCode == projectCode)
             .Select(it => it.Time)
             .Sum();
@@ -155,5 +159,16 @@ public class JsonProjectService : IProjectService {
 
 internal class ProjectsContainer {
     [JsonPropertyName("activities")] public List<Project> Projects { get; set; } = new();
+}
+
+public class ReportOriginWithMeta : ReportOrigin {
+    public int Time { get; set; }
+    public int AcceptedTime { get; set; }
+    public bool IsFrozen { get; set; }
+
+    public override string ToString() {
+        return
+            $"{nameof(UserName)}: {UserName}, {nameof(Year)}: {Year}, {nameof(Month)}: {Month}, {nameof(Time)}: {Time}, {nameof(AcceptedTime)}: {AcceptedTime}";
+    }
 }
 }

@@ -38,9 +38,9 @@ public class HomeController : Controller {
         }
     }
 
-    public IActionResult LockMonth() {
+    public IActionResult SubmitMonthActivities() {
         var state = SessionState;
-        _reportService.LockMonth(new ReportOrigin {
+        _reportService.SubmitMonthActivities(new ReportOrigin {
             UserName = state.UserName,
             Year = state.Year!.Value,
             Month = state.Month!.Value
@@ -69,7 +69,7 @@ public class HomeController : Controller {
             Frozen = report.Frozen,
             Origin = origin,
             ChangeDateForm = new ChangeDateForm {Date = date},
-            OverallTime = IReportService.CalcOverallTime(report.Activities),
+            OverallTime = IReportService.SumTime(report.Activities),
             UserName = state.UserName,
             CanAddActivity = userIsLogged
         };

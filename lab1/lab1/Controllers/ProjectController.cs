@@ -1,4 +1,5 @@
 #nullable enable
+using System.Linq;
 using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Http;
@@ -32,13 +33,24 @@ public class ProjectController : Controller {
 
     [HttpGet]
     public IActionResult Index(string code) {
-        var project = _projectService.GetProjectByCode(code);
+        var project = _projectService.GetProjectByCode(code)!;
         return View(new ProjectViewModel {
-            Cost = project!.Cost,
+            Cost = project.Cost,
             ProjectName = project.Name,
             ProjectCode = code,
-            LeftBudget = _projectService.CalcLeftBudget(code)
+            LeftBudget = _projectService.CalcLeftBudget(project),
+            InitialBudget = project.Budget,
+            ProjectIsActive = project.Active,
+            ReportOriginsWithMeta = _reportService.GetReportOriginsWithMeta(code)
+                .OrderByDescending(it => it.Year)
+                .ThenByDescending(it => it.Month)
         });
+    }
+
+    [HttpGet]
+    public IActionResult CloseProject(string projectCode) {
+        _projectService.CloseProject(projectCode);
+        return RedirectToAction("Index", new {code = projectCode});
     }
 
     [HttpPost]
@@ -64,6 +76,26 @@ public class ProjectController : Controller {
         };
         return View(model);
     }
+
+    [HttpGet]
+    public IActionResult AcceptTime(int year, int month, string userName, string projectCode) {
+        var model = new AcceptTimeViewModel {
+            Origin = new ReportOrigin {
+                UserName = userName,
+                Year = year,
+                Month = month
+            },
+            ProjectCode = projectCode
+        };
+        return View(model);
+    }
+
+    [HttpPost]
+    public IActionResult PostAcceptedTime(ReportOrigin origin, string projectCode, int acceptedTime) {
+        _projectService.AcceptTime(origin, projectCode, acceptedTime);
+        return RedirectToAction("Index", new {code = projectCode});
+    }
+
 
     [HttpGet]
     public IActionResult Create() {

@@ -5,20 +5,85 @@
 }
 
 <div>
-    <form method="post" asp-action="UpdateCost">
-        @Html.HiddenFor(m => m.ProjectCode)
-        <div class="input-group mb-3">
-            <span class="input-group-text" id="Cost">Cost</span>
-            <input asp-for="Cost" class="form-control" aria-label="Sizing example input" aria-describedby="Cost">
+    <div class="row">
+        @if (Model.ProjectIsActive) {
+            <div class="col">
+                <a class="btn btn-primary"
+                   asp-action="CloseProject"
+                   asp-route-projectCode="@Model.ProjectCode">
+                    Close project
+                </a>
+            </div>
+        }
+        <div class="col">
+            <h2>Budget: @Model.InitialBudget (left @Model.LeftBudget)</h2>
         </div>
-
-        <button
-            type="submit"
-            class="btn btn-primary">
-            Update
-        </button>
-    </form>
+    </div>
+    <div class="row col bottom-margin">
+        <form method="post" asp-action="UpdateCost">
+            @Html.HiddenFor(m => m.ProjectCode)
+            <div class="input-group mb-3">
+                <span class="input-group-text" id="Cost">Cost</span>
+                <input asp-for="Cost" class="form-control" aria-label="Sizing example input" aria-describedby="Cost">
+            </div>
+            <div class="form-group">
+                <button
+                    type="submit"
+                    class="btn btn-primary">
+                    Update
+                </button>
+            </div>
+        </form>
+    </div>
     <div class="row col">
-        <h2>Left budget: @Model.LeftBudget</h2>
+        <table class="table">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Date</th>
+                <th scope="col">User</th>
+                <th scope="col">Time</th>
+                <th scope="col">Accepted time</th>
+                @if (Model.ProjectIsActive) {
+                    <th scope="col">Accept time</th>
+                }
+            </tr>
+            </thead>
+            <tbody>
+            @{
+                var counter = 1;
+            }
+            @foreach (var origin in Model.ReportOriginsWithMeta) {
+                <tr>
+                    <th scope="row">@counter</th>
+                    <td>
+                        @($"{origin.Year}/{origin.Month}")
+                    </td>
+                    <td>@origin.UserName</td>
+                    <td>@origin.Time</td>
+                    <td>@origin.AcceptedTime</td>
+                    @if (Model.ProjectIsActive) {
+                        @if (origin.IsFrozen) {
+                            <td>
+                                <a asp-action="AcceptTime"
+                                   asp-route-year="@origin.Year"
+                                   asp-route-month="@origin.Month"
+                                   asp-route-userName="@origin.UserName"
+                                   asp-route-projectCode="@Model.ProjectCode">
+                                    Accept @origin.UserName
+                                </a>
+                            </td>
+                        }
+                        else {
+                            <td>Month is not submitted yet</td>
+                        }
+                    }
+                    @{
+                        counter++;
+                    }
+                </tr>
+            }
+            </tbody>
+        </table>
     </div>
 </div>

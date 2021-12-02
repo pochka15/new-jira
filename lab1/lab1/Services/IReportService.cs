@@ -7,17 +7,18 @@ namespace lab1.Services {
 public interface IReportService {
     DayReport? GetDayReport(ReportOrigin origin, int day);
     MonthReport? GetMonthReport(ReportOrigin origin);
-    IEnumerable<MonthReport> GetAllReports();
+    IEnumerable<MonthReportWithOrigin> GetAllReports();
     MonthStatistics GetMonthStatistics(ReportOrigin origin);
     public MonthReport CreateBlankReport(ReportOrigin origin);
-    void LockMonth(ReportOrigin origin);
+    void SubmitMonthActivities(ReportOrigin origin);
+    IEnumerable<ReportOriginWithMeta> GetReportOriginsWithMeta(string projectCode);
 
-    static int CalcOverallTime(IEnumerable<Activity> activities) {
+    static int SumTime(IEnumerable<Activity> activities) {
         return (from activity in activities select activity.Time).Sum();
     }
 
-    static int CalcOverallAcceptedTime(IEnumerable<ProjectTime> projectTimes) {
-        return (from projectTime in projectTimes select projectTime.Time).Sum();
+    static int CalcOverallAcceptedTime(IEnumerable<ProjectTimeSummary> timeSummaries) {
+        return (from projectTime in timeSummaries select projectTime.Time).Sum();
     }
 }
 }

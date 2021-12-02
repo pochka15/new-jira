@@ -5,18 +5,24 @@
 }
 
 <div>
-    <div class="row row-bottom-margin">
-        <div class="col">
-            <a class="btn btn-primary" hidden="@(!Model.CanAddActivity)" asp-controller="Activity" asp-action="Add">
-                New activity
-            </a>
-        </div>
+    <div class="row bottom-margin">
+        @if (!Model.Frozen) {
+            <div class="col">
+                <a class="btn btn-primary" hidden="@(!Model.CanAddActivity)" asp-controller="Activity" asp-action="Add">
+                    New activity
+                </a>
+            </div>
+        }
         <div class="col">
             <form asp-action="ChangeDate" method="get">
-                <input asp-for="ChangeDateForm.Date" class="row-bottom-margin">
-                <button type="submit" class="btn btn-primary">
-                    Change date
-                </button>
+                <div class="form-group">
+                    <input asp-for="ChangeDateForm.Date" class="bottom-margin">
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        Change date
+                    </button>
+                </div>
             </form>
         </div>
         <div class="col">
@@ -25,16 +31,18 @@
             </h2>
         </div>
     </div>
-    <div class="row row-bottom-margin">
+    <div class="row bottom-margin">
         <div class="col">
             <form asp-action="ChangeUser">
                 <div class="input-group mb-3">
                     <span class="input-group-text" id="UserName">User name</span>
                     <input asp-for="UserName" class="form-control" aria-label="Sizing example input" aria-describedby="UserName">
                 </div>
-                <button type="submit" class="btn btn-primary">
-                    Change user
-                </button>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">
+                        Change user
+                    </button>
+                </div>
             </form>
         </div>
     </div>

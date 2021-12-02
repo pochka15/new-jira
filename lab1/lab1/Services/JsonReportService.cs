@@ -30,7 +30,7 @@ public class JsonReportService : IReportService {
         report.Activities.RemoveAll(it => DateTime.Parse(it.Date).Day != day);
 
         return new DayReport {
-            Frozen = report.Frozen,
+            Frozen = report.IsFrozen,
             Activities = report.Activities
         };
     }
@@ -44,7 +44,7 @@ public class JsonReportService : IReportService {
         return query.FirstOrDefault();
     }
 
-    public IEnumerable<MonthReport> GetAllReports() {
+    public IEnumerable<MonthReportWithOrigin> GetAllReports() {
         var root = Path.Combine(_dataRoot, "activities");
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
         return from path in files select DeserializeReport(path);
@@ -55,7 +55,7 @@ public class JsonReportService : IReportService {
         if (report == null) return new MonthStatistics();
         return new MonthStatistics {
             ProjectToTime = BuildProjectToTime(report),
-            ProjectToAcceptedTime = BuildProjectToAcceptedTime(report)
+            ProjectToAcceptedTime = GetProjectToAcceptedTime(report)
         };
     }
 
@@ -66,22 +66,22 @@ public class JsonReportService : IReportService {
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
         report = new MonthReport {
             Activities = new List<Activity>(),
-            Frozen = false,
-            AcceptedActivities = new List<ProjectTime>()
+            IsFrozen = false,
+            TimeSummaries = new List<ProjectTimeSummary>()
         };
         File.WriteAllText(path, JsonSerializer.Serialize(report));
         return report;
     }
 
-    public void LockMonth(ReportOrigin origin) {
+    public void SubmitMonthActivities(ReportOrigin origin) {
         var report = GetMonthReport(origin)!;
-        report.Frozen = true;
+        report.IsFrozen = true;
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
         File.WriteAllText(path, JsonSerializer.Serialize(report));
     }
 
-    private static Dictionary<string, int> BuildProjectToAcceptedTime(MonthReport report) {
-        var groups = from activity in report.AcceptedActivities
+    private static Dictionary<string, int> GetProjectToAcceptedTime(MonthReport report) {
+        var groups = from activity in report.TimeSummaries
             group activity by activity.ProjectCode
             into projectGroup
             select projectGroup;
@@ -97,7 +97,7 @@ public class JsonReportService : IReportService {
             select projectGroup;
         return groups.ToDictionary(
             it => it.Key,
-            it => IReportService.CalcOverallTime(it.AsEnumerable()));
+            it => IReportService.SumTime(it.AsEnumerable()));
     }
 
     public static string GetReportFileName(ReportOrigin origin) {

@@ -1,0 +1,52 @@
+@model AcceptTimeViewModel
+
+@{
+    ViewData["Title"] = "Accept time";
+}
+
+<div>
+    <form method="post">
+        <input type="hidden" asp-for="ProjectCode" value="@Model.ProjectCode"/>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="Year">Year</span>
+            <input asp-for="Origin.Year"
+                   value="@Model.Origin.Year"
+                   readonly="@true"
+                   class="form-control"
+                   aria-label="Year"
+                   aria-describedby="Year"/>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="Month">Month</span>
+            <input asp-for="Origin.Month"
+                   readonly="@true"
+                   value="@Model.Origin.Month"
+                   class="form-control"
+                   aria-label="Month"
+                   aria-describedby="Month"/>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="UserName">UserName</span>
+            <input asp-for="Origin.UserName"
+                   value="@Model.Origin.UserName"
+                   readonly="@true"
+                   class="form-control"
+                   aria-label="UserName"
+                   aria-describedby="UserName"/>
+        </div>
+        <div class="input-group mb-3">
+            <span class="input-group-text" id="AcceptedTime">AcceptedTime</span>
+            <input asp-for="AcceptedTime"
+                   class="form-control"
+                   aria-label="AcceptedTime"
+                   aria-describedby="AcceptedTime"/>
+        </div>
+        <button
+            asp-action="PostAcceptedTime"
+            asp-controller="Project"
+            class="btn btn-primary"
+            type="submit">
+            Accept
+        </button>
+    </form>
+</div>
