@@ -47,7 +47,7 @@ public class JsonReportService : IReportService {
     public IEnumerable<MonthReportWithOrigin> GetAllReports() {
         var root = Path.Combine(_dataRoot, "activities");
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
-        return from path in files select DeserializeReport(path);
+        return from path in files select DeserializeReportWithOrigin(path);
     }
 
     public MonthStatistics GetMonthStatistics(ReportOrigin origin) {
@@ -80,6 +80,38 @@ public class JsonReportService : IReportService {
         File.WriteAllText(path, JsonSerializer.Serialize(report));
     }
 
+    public IEnumerable<ReportOriginWithMeta> GetReportOriginsWithMeta(string projectCode) {
+        return GetAllReports()
+            .Select(it => {
+                it.Activities = it.Activities
+                    .Where(activity => activity.ProjectCode == projectCode)
+                    .ToList();
+                return it;
+            })
+            .Where(it => it.Activities.Any())
+            .Select(it => new ReportOriginWithMeta {
+                UserName = it.Origin.UserName,
+                Year = it.Origin.Year,
+                Month = it.Origin.Month,
+                Time = IReportService.SumTime(it.Activities),
+                AcceptedTime = ExtractSummary(projectCode, it).Time,
+                IsFrozen = it.IsFrozen
+            });
+    }
+
+    private static DateTime ToDate(int year, int month) {
+        return new DateTime(year, month, 1);
+    }
+
+    private static ReportOrigin ParseReportOrigin(string path) {
+        var parts = Path.GetFileNameWithoutExtension(path).Split("-");
+        return new ReportOrigin {
+            UserName = parts[0],
+            Year = Convert.ToInt32(parts[1]),
+            Month = Convert.ToInt32(parts[2])
+        };
+    }
+
     private static Dictionary<string, int> GetProjectToAcceptedTime(MonthReport report) {
         var groups = from activity in report.TimeSummaries
             group activity by activity.ProjectCode
@@ -110,6 +142,23 @@ public class JsonReportService : IReportService {
             new JsonSerializerOptions {
                 PropertyNameCaseInsensitive = true
             })!;
+    }
+
+    private static MonthReportWithOrigin DeserializeReportWithOrigin(string path) {
+        using var reader = File.OpenText(path);
+        var report = JsonSerializer.Deserialize<MonthReportWithOrigin>(
+            reader.ReadToEnd(),
+            new JsonSerializerOptions {
+                PropertyNameCaseInsensitive = true
+            })!;
+        report.Origin = ParseReportOrigin(path);
+        return report;
+    }
+
+    private static ProjectTimeSummary ExtractSummary(string projectCode, MonthReport report) {
+        return report.TimeSummaries
+                   .FirstOrDefault(s => s.ProjectCode == projectCode)
+               ?? new ProjectTimeSummary(projectCode);
     }
 }
 }

@@ -25,13 +25,18 @@
                    aria-describedby="SpentTime"/>
         </div>
 
-        <span class="input-group-text">Description</span>
-        <textarea asp-for="Description" class="form-control" aria-label="Description"></textarea>
-        <button
-            type="submit"
-            asp-action="Add"
-            class="btn btn-primary">
-            Submit
-        </button>
+        <div class="mb-3">
+            <span class="input-group-text">Description</span>
+            <textarea asp-for="Description" class="form-control" aria-label="Description"></textarea>
+        </div>
+
+        <div class="form-group">
+            <button
+                type="submit"
+                asp-action="Add"
+                class="btn btn-primary">
+                Submit
+            </button>
+        </div>
     </form>
 </div>

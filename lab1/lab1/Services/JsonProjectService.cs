@@ -34,7 +34,7 @@ public class JsonProjectService : IProjectService {
             break;
         }
 
-        File.WriteAllText(path, JsonSerializer.Serialize(report));
+        Store(report, origin);
     }
 
     public void DeleteActivityMatching(ReportOrigin origin, Predicate<Activity> pred) {
@@ -73,10 +73,36 @@ public class JsonProjectService : IProjectService {
             JsonSerializer.Serialize(new ProjectsContainer {Projects = projects}));
     }
 
-    public int CalcLeftBudget(string projectCode) {
-        var project = GetProjectByCode(projectCode);
-        if (project == null) return 0;
-        return project.Budget - CalcOverallAcceptedTime(projectCode) * project.Cost;
+    public int CalcLeftBudget(Project project) {
+        return project.Budget - CalcOverallAcceptedTime(project.Code) * project.Cost;
+    }
+
+    public void AcceptTime(ReportOrigin origin, string projectCode, int time) {
+        var report = _reportService.GetMonthReport(origin)!;
+        var summary = report.TimeSummaries
+            .FirstOrDefault(it => it.ProjectCode == projectCode);
+        if (summary == null) {
+            var newOne = new ProjectTimeSummary(projectCode, time);
+            report.TimeSummaries.Add(newOne);
+            summary = newOne;
+        }
+
+        summary.Time = time;
+        Store(report, origin);
+    }
+
+    public void CloseProject(string projectCode) {
+        var projects = GetAllProjects().ToList();
+        foreach (var p
+                 in projects.Where(p => p.Code == projectCode)) {
+            p.Active = false;
+            break;
+        }
+
+        File.WriteAllText(Path.Combine(_dataRoot, "activities.json"),
+            JsonSerializer.Serialize(new ProjectsContainer {
+                Projects = projects
+            }));
     }
 
     public IEnumerable<Project> GetActiveProjects() {
@@ -118,6 +144,11 @@ public class JsonProjectService : IProjectService {
                 Projects = projects
             }));
         return project;
+    }
+
+    private void Store(MonthReport report, ReportOrigin origin) {
+        var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
+        File.WriteAllText(path, JsonSerializer.Serialize(report));
     }
 
     private int CalcOverallAcceptedTime(string projectCode) {
