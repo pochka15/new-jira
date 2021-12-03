@@ -1,6 +1,8 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using lab1.Dtos.Project;
+using lab1.Dtos.Report;
 using lab1.Models;
 
 namespace lab1.Services {

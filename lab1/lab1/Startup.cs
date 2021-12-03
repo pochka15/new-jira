@@ -1,5 +1,5 @@
 using System.IO;
-using lab1.Models;
+using lab1.Dtos.Others;
 using lab1.Models.Data;
 using lab1.Services;
 using Microsoft.AspNetCore.Builder;

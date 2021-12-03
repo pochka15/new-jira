@@ -1,9 +1,9 @@
-namespace lab1.Models {
-public class EditActivityDto {
-    public int Id { get; set; }
+namespace lab1.Dtos.Report {
+public class AddActivityDto {
     public string ProjectCode { get; set; }
     public string SubprojectCode { get; set; }
     public int SpentTime { get; set; }
     public string Description { get; set; }
+    public int Day { get; set; }
 }
 }

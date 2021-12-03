@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using lab1.Dtos.Others;
 using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Http;
@@ -16,7 +17,7 @@ public class HomeController : Controller {
         _reportService = reportService;
     }
 
-    private static DayReport BlankReport =>
+    private static DayActivities BlankActivities =>
         new() {
             Activities = new List<Models.Activity>(),
             Frozen = false
@@ -62,7 +63,7 @@ public class HomeController : Controller {
             UserName = state.UserName,
             Year = state.Year.Value
         };
-        var report = _reportService.GetDayReport(origin, state.Day.Value) ?? BlankReport;
+        var report = _reportService.GetDayReport(origin, state.Day.Value) ?? BlankActivities;
         var date = DateTime.Parse(string.Join('/', state.Year.Value, state.Month.Value, state.Day.Value));
         var model = new ReportViewModel {
             Activities = report.Activities,

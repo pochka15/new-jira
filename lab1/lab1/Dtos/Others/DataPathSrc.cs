@@ -1,4 +1,4 @@
-namespace lab1.Models {
+namespace lab1.Dtos.Others {
 /// <summary>
 /// A source that provides with a path to the json data root folder
 /// </summary>

@@ -1,11 +1,12 @@
 #nullable enable
 using System.Collections.Generic;
 using System.Linq;
+using lab1.Dtos.Others;
 using lab1.Models;
 
 namespace lab1.Services {
 public interface IReportService {
-    DayReport? GetDayReport(ReportOrigin origin, int day);
+    DayActivities? GetDayReport(ReportOrigin origin, int day);
     MonthReport? GetMonthReport(ReportOrigin origin);
     IEnumerable<MonthReportWithOrigin> GetAllReports();
     MonthStatistics GetMonthStatistics(ReportOrigin origin);

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using lab1.Dtos.Others;
 using lab1.Models;
 
 namespace lab1.Services {
@@ -18,7 +19,7 @@ public class JsonReportService : IReportService {
         _dataRoot = src.Path;
     }
 
-    public DayReport? GetDayReport(ReportOrigin origin, int day) {
+    public DayActivities? GetDayReport(ReportOrigin origin, int day) {
         var root = Path.Combine(_dataRoot, "activities");
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
         var query = from path in files
@@ -29,7 +30,7 @@ public class JsonReportService : IReportService {
         if (report == null) return null;
         report.Activities.RemoveAll(it => DateTime.Parse(it.Date).Day != day);
 
-        return new DayReport {
+        return new DayActivities {
             Frozen = report.IsFrozen,
             Activities = report.Activities
         };

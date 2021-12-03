@@ -6,6 +6,9 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using lab1.Dtos.Others;
+using lab1.Dtos.Project;
+using lab1.Dtos.Report;
 using lab1.Models;
 using Activity = lab1.Models.Activity;
 

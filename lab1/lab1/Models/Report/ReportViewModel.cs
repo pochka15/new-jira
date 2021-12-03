@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using lab1.Dtos.Others;
 
 namespace lab1.Models {
 public class ReportViewModel {

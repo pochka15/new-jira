@@ -1,7 +1,7 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace lab1.Models {
+namespace lab1.Dtos.Others {
 /// <summary>
 /// Form data which is primarily used for the feature: change date on the report page
 /// </summary>

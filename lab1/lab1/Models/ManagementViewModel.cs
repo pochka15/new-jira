@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 namespace lab1.Models {
-public class ManagementModelView {
+public class ManagementViewModel {
     public List<SimplifiedProject> Projects { get; set; }
 }
 

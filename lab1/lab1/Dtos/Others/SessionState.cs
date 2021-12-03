@@ -1,5 +1,5 @@
 #nullable enable
-namespace lab1.Models {
+namespace lab1.Dtos.Others {
 public class SessionState {
     public const string UserNameField = "UserName";
     public const string YearField = "Year";

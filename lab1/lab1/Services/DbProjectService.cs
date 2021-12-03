@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using lab1.Dtos.Project;
+using lab1.Dtos.Report;
 using lab1.Models;
 using lab1.Models.Data;
 using Activity = lab1.Models.Activity;

@@ -1,4 +1,4 @@
-namespace lab1.Models {
+namespace lab1.Dtos.Project {
 public class CreateProjectDto {
     public string ProjectName { get; set; }
     public string Code { get; set; }

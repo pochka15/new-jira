@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using lab1.Dtos.Others;
 using lab1.Extensions;
 using lab1.Models;
 using lab1.Services;
@@ -37,7 +38,7 @@ public class ManagementController : Controller {
             : _projectService.GetManagedProjects(manager)
                 .Select(it => it.ToSimplifiedProject())
                 .ToList();
-        var model = new ManagementModelView {Projects = projects};
+        var model = new ManagementViewModel {Projects = projects};
         return View(model);
     }
 }
