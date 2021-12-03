@@ -37,14 +37,16 @@ public class JsonProjectService : IProjectService {
             break;
         }
 
-        Store(report, origin);
+        Store(report.ToModel(), origin);
     }
 
     public void DeleteActivityMatching(ReportOrigin origin, Predicate<Activity> pred) {
         var report = _reportService.GetMonthReport(origin)!;
         var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
 
-        report.Activities.RemoveAll(pred);
+        report.Activities = report.Activities
+            .Where(it => pred(it.ToModel()))
+            .ToList();
         File.WriteAllText(path, JsonSerializer.Serialize(report));
     }
 
@@ -52,18 +54,20 @@ public class JsonProjectService : IProjectService {
         var isActive = GetProjectById(dto.ProjectCode)!.IsActive;
         Debug.Assert(isActive);
 
-        var report = _reportService.GetMonthReport(origin) ?? _reportService.CreateBlankReport(origin);
+        var reportDto = _reportService.GetMonthReport(origin) ?? _reportService.CreateBlankReport(origin);
         var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
-        var id = GetNextId(report.Activities);
+        var id = GetNextId(reportDto.Activities);
 
-        report.Activities.Add(new Activity {
-            Id = id,
-            Date = string.Join('/', origin.Year, origin.Month, dto.Day),
-            ProjectCode = dto.ProjectCode,
-            SubprojectCode = dto.SubprojectCode,
-            Time = dto.SpentTime,
-            Description = dto.Description
-        });
+        var report = reportDto.ToModel();
+        report.Activities
+            .Add(new Activity {
+                Id = id,
+                Date = string.Join('/', origin.Year, origin.Month, dto.Day),
+                ProjectCode = dto.ProjectCode,
+                SubprojectCode = dto.SubprojectCode,
+                Time = dto.SpentTime,
+                Description = dto.Description
+            });
         File.WriteAllText(path, JsonSerializer.Serialize(report));
     }
 
@@ -91,7 +95,7 @@ public class JsonProjectService : IProjectService {
         }
 
         summary.Time = time;
-        Store(report, origin);
+        Store(report.ToModel(), origin);
     }
 
     public void CloseProject(string projectId) {
@@ -157,9 +161,9 @@ public class JsonProjectService : IProjectService {
             .SelectMany(DeserializeProjects);
     }
 
-    private void Store(MonthReportWithoutOrigin reportWithoutOrigin, ReportOrigin origin) {
+    private void Store(MonthReport report, ReportOrigin origin) {
         var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
-        File.WriteAllText(path, JsonSerializer.Serialize(reportWithoutOrigin));
+        File.WriteAllText(path, JsonSerializer.Serialize(report));
     }
 
     private int CalcOverallAcceptedTime(string projectCode) {
@@ -170,14 +174,14 @@ public class JsonProjectService : IProjectService {
             .Sum();
     }
 
-    private static void CopyDataFromDto(Activity activity, EditActivityDto dto) {
+    private static void CopyDataFromDto(ActivityDto activity, EditActivityDto dto) {
         activity.ProjectCode = dto.ProjectCode;
         activity.Description = dto.Description;
         activity.Time = dto.SpentTime;
         activity.SubprojectCode = dto.SubprojectCode;
     }
 
-    private static int GetNextId(IEnumerable<Activity> activities) {
+    private static int GetNextId(IEnumerable<ActivityDto> activities) {
         return activities.Select(activity => activity.Id).Prepend(0).Max() + 1;
     }
 

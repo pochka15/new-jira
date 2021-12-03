@@ -24,8 +24,8 @@ public class Startup {
         var dataPath = Path.Combine(_environment.WebRootPath, "data");
         services.AddSingleton(new DataPathSrc(dataPath));
         services.AddControllersWithViews().AddRazorRuntimeCompilation();
-        services.AddTransient<IProjectService, JsonProjectService>();
-        services.AddTransient<IReportService, JsonReportService>();
+        services.AddTransient<IProjectService, DbProjectService>();
+        services.AddTransient<IReportService, DbReportService>();
 
         services.AddDistributedMemoryCache();
 

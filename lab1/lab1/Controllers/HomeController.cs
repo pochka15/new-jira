@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using lab1.Dtos.Others;
+using lab1.Dtos.Project;
 using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Http;
@@ -19,7 +20,7 @@ public class HomeController : Controller {
 
     private static DayActivities BlankActivities =>
         new() {
-            Activities = new List<Models.Activity>(),
+            Activities = new List<ActivityDto>(),
             Frozen = false
         };
 
@@ -53,7 +54,7 @@ public class HomeController : Controller {
         var state = SessionState;
         var userIsLogged = state.UserName != null;
         // default magic constants
-        if (state.Year == null) state = UpdateState(2021, 12, 7);
+        if (state.Year == null) state = UpdateState(2021, 11, 7);
 
         Debug.Assert(state.Year != null && state.Month != null && state.Day != null,
             "state.Year != null && state.Month != null && state.Day != null");

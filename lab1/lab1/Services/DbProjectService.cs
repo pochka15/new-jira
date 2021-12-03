@@ -28,13 +28,15 @@ public class DbProjectService : IProjectService {
     public IEnumerable<ProjectDto> GetActiveProjects() {
         return _ctx.Projects
             .Where(it => it.IsActive)
-            .Select(it => it.ToProjectDto());
+            .Select(it => it.ToProjectDto())
+            .ToList();
     }
 
     public IEnumerable<ProjectDto> GetManagedProjects(string manager) {
         return _ctx.Projects
             .Where(it => it.Manager == manager)
-            .Select(it => it.ToProjectDto());
+            .Select(it => it.ToProjectDto())
+            .ToList();
     }
 
     public void CreateProject(CreateProjectDto dto) {
@@ -60,48 +62,99 @@ public class DbProjectService : IProjectService {
     }
 
     public void DeleteActivityMatching(ReportOrigin reportOrigin, Predicate<Activity> pred) {
-        throw new NotImplementedException();
+        var report = RepositoryUtils.GetReportWithActivities(reportOrigin, _ctx);
+        if (report == null) return;
+        report.Activities.Remove(report.Activities.FirstOrDefault(pred.Invoke));
+        _ctx.SaveChanges();
     }
 
+    // TODO(@pochka15): test it
     public void EditActivity(ReportOrigin reportOrigin, EditActivityDto dto) {
-        throw new NotImplementedException();
+        var activity = RepositoryUtils.GetReportWithActivities(reportOrigin, _ctx)
+            ?.Activities
+            .FirstOrDefault(it => it.Id == dto.Id);
+        if (activity == null) return;
+
+        activity.ProjectCode = dto.ProjectCode;
+        activity.SubprojectCode = dto.SubprojectCode;
+        activity.Time = dto.SpentTime;
+        activity.Description = dto.Description;
+        _ctx.SaveChanges();
     }
 
     public void AddActivity(ReportOrigin origin, AddActivityDto dto) {
         var isActive = GetProjectById(dto.ProjectCode)!.IsActive;
         Debug.Assert(isActive);
 
-        // _ctx.MonthReports
-        // .Where(it => it.)
-        // var report = _reportService.GetMonthReport(origin) ?? _reportService.CreateBlankReport(origin);
-        // report.Activities
-        // .Add(new Activity {
-        // Date = string.Join('/', origin.Year, origin.Month, dto.Day),
-        // ProjectCode = dto.ProjectCode,
-        // SubprojectCode = dto.SubprojectCode,
-        // Time = dto.SpentTime,
-        // Description = dto.Description
-        // });
+        var report = RepositoryUtils.GetReportWithActivities(origin, _ctx);
+        // ReSharper disable once ConvertIfStatementToNullCoalescingExpression
+        if (report == null) {
+            // Note: it can be optimized by creating the report in the repository
+            var reportDto = _reportService.CreateBlankReport(origin);
+            report = RepositoryUtils.GetReport(reportDto.Origin, _ctx)!;
+        }
+
+        report.Activities
+            .Add(new Activity {
+                Date = string.Join('/', origin.Year, origin.Month, dto.Day),
+                ProjectCode = dto.ProjectCode,
+                SubprojectCode = dto.SubprojectCode,
+                Time = dto.SpentTime,
+                Description = dto.Description
+            });
+        _ctx.SaveChanges();
     }
 
     public void UpdateCost(string projectId, int cost) {
-        throw new NotImplementedException();
+        var project = FindProjectById(projectId);
+        if (project == null) return;
+        project.Cost = cost;
+        _ctx.SaveChanges();
     }
 
     public int CalcLeftBudget(ProjectDto project) {
-        throw new NotImplementedException();
+        return project.Budget - CalcOverallAcceptedTime(project.Id) * project.Cost;
     }
 
     public void AcceptTime(ReportOrigin origin, string projectId, int time) {
-        throw new NotImplementedException();
+        var report = RepositoryUtils.GetReportWithAcceptedWork(origin, _ctx);
+        if (report == null) return;
+
+        var summary = report.AcceptedWork
+            .FirstOrDefault(it => it.Id == projectId);
+        if (summary == null) {
+            var newOne = new ProjectCodeAndTime(projectId, time);
+            report.AcceptedWork.Add(newOne);
+            summary = newOne;
+        }
+
+        summary.Time = time;
+        _ctx.SaveChanges();
     }
 
     public void CloseProject(string projectId) {
-        throw new NotImplementedException();
+        var project = _ctx.Projects
+            .FirstOrDefault(it => it.Id == projectId);
+        if (project == null) return;
+        project.IsActive = false;
+        _ctx.SaveChanges();
     }
 
     public IEnumerable<ProjectDto> GetAllProjects() {
-        throw new NotImplementedException();
+        return _ctx.Projects.Select(it => it.ToProjectDto()).ToList();
+    }
+
+    private Project? FindProjectById(string id) {
+        return _ctx.Projects
+            .FirstOrDefault(it => it.Id == id);
+    }
+
+    private int CalcOverallAcceptedTime(string projectCode) {
+        return _reportService.GetAllReports()
+            .SelectMany(it => it.AcceptedWork)
+            .Where(it => it.Id == projectCode)
+            .Select(it => it.Time)
+            .Sum();
     }
 }
 }

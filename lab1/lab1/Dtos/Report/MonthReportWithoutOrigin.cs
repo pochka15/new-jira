@@ -1,13 +1,13 @@
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
+using lab1.Dtos.Project;
 using lab1.Models;
 
 namespace lab1.Dtos.Report {
 public class MonthReportWithoutOrigin {
-    [JsonPropertyName("Frozen")] public bool IsFrozen { get; set; }
+    public bool IsFrozen { get; set; }
 
-    [JsonPropertyName("Entries")] public List<Activity> Activities { get; set; }
+    public List<ActivityDto> Activities { get; set; }
 
-    [JsonPropertyName("Accepted")] public List<ProjectCodeAndTime> AcceptedWork { get; set; }
+    public List<ProjectCodeAndTime> AcceptedWork { get; set; }
 }
 }

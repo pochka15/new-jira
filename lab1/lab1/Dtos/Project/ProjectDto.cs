@@ -1,18 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.Json.Serialization;
 using lab1.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace lab1.Dtos.Project {
 public class ProjectDto {
-    [JsonPropertyName("Code")] public string Id { get; set; }
-    [JsonPropertyName("Owner")] public string Manager { get; set; }
+    public string Id { get; set; }
+    public string Manager { get; set; }
     public string Name { get; set; }
     public int Budget { get; set; }
-    [JsonPropertyName("Active")] public bool IsActive { get; set; }
+    public bool IsActive { get; set; }
     public int Cost { get; set; }
-    [JsonPropertyName("SubActivities")] public List<SubprojectDto> Subprojects { get; set; }
+    public List<SubprojectDto> Subprojects { get; set; }
 
     public SelectListItem ToSelectItem() {
         return new SelectListItem(Name, Id);

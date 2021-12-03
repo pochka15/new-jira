@@ -20,7 +20,7 @@ public static class DbInitializer {
 
 
         foreach (var r in reportService.GetAllReports()) {
-            context.MonthReports.Add(r.ToMonthReport());
+            context.MonthReports.Add(r.ToModel());
         }
 
         context.SaveChanges();

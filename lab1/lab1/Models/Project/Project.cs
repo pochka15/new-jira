@@ -11,7 +11,7 @@ public class Project {
     public int Budget { get; set; }
     [JsonPropertyName("Active")] public bool IsActive { get; set; }
     public int Cost { get; set; }
-    [JsonPropertyName("SubActivities")] public List<Subproject> Subprojects { get; set; }
+    [JsonPropertyName("SubActivities")] public List<Subproject> Subprojects { get; set; } = new();
 
     public ProjectDto ToProjectDto() {
         return new ProjectDto {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using lab1.Dtos.Others;
+using lab1.Dtos.Project;
 using lab1.Dtos.Report;
 using lab1.Models;
 
@@ -15,7 +16,7 @@ public interface IReportService {
     void SubmitMonthActivities(ReportOrigin origin);
     IEnumerable<ReportOriginWithMeta> GetReportOriginsWithMeta(string projectId);
 
-    static int SumTime(IEnumerable<Activity> activities) {
+    static int SumTime(IEnumerable<ActivityDto> activities) {
         return (from activity in activities select activity.Time).Sum();
     }
 

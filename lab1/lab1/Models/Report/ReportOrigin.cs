@@ -1,3 +1,5 @@
+// TODO(@pochka15): move to dtos
+
 namespace lab1.Models {
 public class ReportOrigin {
     public string UserName { get; set; }

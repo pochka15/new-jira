@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Text.Json;
 using lab1.Dtos.Others;
+using lab1.Dtos.Project;
 using lab1.Dtos.Report;
 using lab1.Models;
 
@@ -25,7 +26,7 @@ public class JsonReportService : IReportService {
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
         var query = from path in files
             where Path.GetFileName(path).Equals(origin.UserName + "-" + origin.Year + "-" + origin.Month + ".json")
-            select DeserializeReport(path);
+            select DeserializeReport(path, origin);
         var report = query.FirstOrDefault();
 
         if (report == null) return null;
@@ -33,7 +34,7 @@ public class JsonReportService : IReportService {
 
         return new DayActivities {
             Frozen = report.IsFrozen,
-            Activities = report.Activities
+            Activities = report.Activities.Select(it => it.ToActivityDto()).ToList()
         };
     }
 
@@ -42,14 +43,16 @@ public class JsonReportService : IReportService {
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
         var query = from path in files
             where Path.GetFileName(path).Equals(GetReportFileName(origin))
-            select DeserializeReportWithOrigin(path);
-        return query.FirstOrDefault();
+            select DeserializeReport(path, origin);
+        return query.Select(it => it.ToMonthReportWithOrigin()).FirstOrDefault();
     }
 
     public IEnumerable<MonthReportWithOrigin> GetAllReports() {
         var root = Path.Combine(_dataRoot, "activities");
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
-        return from path in files select DeserializeReportWithOrigin(path);
+        var reports = from path in files
+            select DeserializeReport(path, ParseReportOrigin(path));
+        return reports.Select(it => it.ToMonthReportWithOrigin());
     }
 
     public MonthStatistics GetMonthStatistics(ReportOrigin origin) {
@@ -67,7 +70,7 @@ public class JsonReportService : IReportService {
 
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
         report = new MonthReportWithOrigin {
-            Activities = new List<Activity>(),
+            Activities = new List<ActivityDto>(),
             IsFrozen = false,
             AcceptedWork = new List<ProjectCodeAndTime>(),
             Origin = origin
@@ -92,18 +95,7 @@ public class JsonReportService : IReportService {
                 return it;
             })
             .Where(it => it.Activities.Any())
-            .Select(it => new ReportOriginWithMeta {
-                UserName = it.Origin.UserName,
-                Year = it.Origin.Year,
-                Month = it.Origin.Month,
-                Time = IReportService.SumTime(it.Activities),
-                AcceptedTime = ExtractSummary(projectId, it).Time,
-                IsFrozen = it.IsFrozen
-            });
-    }
-
-    private static DateTime ToDate(int year, int month) {
-        return new DateTime(year, month, 1);
+            .Select(it => it.ToReportOriginWithMeta(projectId));
     }
 
     private static ReportOrigin ParseReportOrigin(string path) {
@@ -115,7 +107,7 @@ public class JsonReportService : IReportService {
         };
     }
 
-    private static Dictionary<string, int> GetProjectToAcceptedTime(MonthReportWithoutOrigin reportWithoutOrigin) {
+    public static Dictionary<string, int> GetProjectToAcceptedTime(MonthReportWithoutOrigin reportWithoutOrigin) {
         var groups = from activity in reportWithoutOrigin.AcceptedWork
             group activity by activity.Id
             into projectGroup
@@ -125,7 +117,7 @@ public class JsonReportService : IReportService {
             it => IReportService.CalcOverallAcceptedTime(it.AsEnumerable()));
     }
 
-    private static Dictionary<string, int> BuildProjectToTime(MonthReportWithoutOrigin reportWithoutOrigin) {
+    public static Dictionary<string, int> BuildProjectToTime(MonthReportWithoutOrigin reportWithoutOrigin) {
         var groups = from activity in reportWithoutOrigin.Activities
             group activity by activity.ProjectCode
             into projectGroup
@@ -139,26 +131,19 @@ public class JsonReportService : IReportService {
         return origin.UserName + "-" + origin.Year + "-" + origin.Month + ".json";
     }
 
-    private static MonthReportWithoutOrigin DeserializeReport(string path) {
+    private static MonthReport DeserializeReport(string path, ReportOrigin origin) {
         using var reader = File.OpenText(path);
-        return JsonSerializer.Deserialize<MonthReportWithoutOrigin>(reader.ReadToEnd(),
+        var report = JsonSerializer.Deserialize<MonthReport>(reader.ReadToEnd(),
             new JsonSerializerOptions {
                 PropertyNameCaseInsensitive = true
             })!;
-    }
-
-    private static MonthReportWithOrigin DeserializeReportWithOrigin(string path) {
-        using var reader = File.OpenText(path);
-        var report = JsonSerializer.Deserialize<MonthReportWithOrigin>(
-            reader.ReadToEnd(),
-            new JsonSerializerOptions {
-                PropertyNameCaseInsensitive = true
-            })!;
-        report.Origin = ParseReportOrigin(path);
+        report.Year = origin.Year;
+        report.Month = origin.Month;
+        report.UserName = origin.UserName;
         return report;
     }
 
-    private static ProjectCodeAndTime ExtractSummary(string projectCode, MonthReportWithoutOrigin reportWithoutOrigin) {
+    public static ProjectCodeAndTime ExtractSummary(string projectCode, MonthReportWithoutOrigin reportWithoutOrigin) {
         return reportWithoutOrigin.AcceptedWork
                    .FirstOrDefault(s => s.Id == projectCode)
                ?? new ProjectCodeAndTime(projectCode);
