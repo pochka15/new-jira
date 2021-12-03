@@ -1,5 +1,6 @@
 using System;
 using lab1.Models.Data;
+using lab1.Services;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -18,7 +19,9 @@ public class Program {
         var services = scope.ServiceProvider;
         try {
             var context = services.GetRequiredService<MainContext>();
-            DbInitializer.Initialize(context);
+            var projectService = services.GetRequiredService<IProjectService>();
+            var reportService = services.GetRequiredService<IReportService>();
+            DbInitializer.Initialize(context, projectService, reportService);
         }
         catch (Exception ex) {
             var logger = services.GetRequiredService<ILogger<Program>>();

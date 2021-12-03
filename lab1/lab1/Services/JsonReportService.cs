@@ -67,7 +67,7 @@ public class JsonReportService : IReportService {
         report = new MonthReport {
             Activities = new List<Activity>(),
             IsFrozen = false,
-            TimeSummaries = new List<ProjectTimeSummary>()
+            AcceptedWork = new List<ProjectCodeAndTime>()
         };
         File.WriteAllText(path, JsonSerializer.Serialize(report));
         return report;
@@ -113,8 +113,8 @@ public class JsonReportService : IReportService {
     }
 
     private static Dictionary<string, int> GetProjectToAcceptedTime(MonthReport report) {
-        var groups = from activity in report.TimeSummaries
-            group activity by activity.ProjectCode
+        var groups = from activity in report.AcceptedWork
+            group activity by activity.Id
             into projectGroup
             select projectGroup;
         return groups.ToDictionary(
@@ -155,10 +155,10 @@ public class JsonReportService : IReportService {
         return report;
     }
 
-    private static ProjectTimeSummary ExtractSummary(string projectCode, MonthReport report) {
-        return report.TimeSummaries
-                   .FirstOrDefault(s => s.ProjectCode == projectCode)
-               ?? new ProjectTimeSummary(projectCode);
+    private static ProjectCodeAndTime ExtractSummary(string projectCode, MonthReport report) {
+        return report.AcceptedWork
+                   .FirstOrDefault(s => s.Id == projectCode)
+               ?? new ProjectCodeAndTime(projectCode);
     }
 }
 }

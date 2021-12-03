@@ -8,12 +8,13 @@ public class MainContext : DbContext {
     public DbSet<Project> Projects { get; set; }
     public DbSet<MonthReport> MonthReports { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) {
-        modelBuilder.Entity<Project>().ToTable("Project");
-        modelBuilder.Entity<Subproject>().ToTable("Subproject");
-        modelBuilder.Entity<MonthReport>().ToTable("MonthReport");
-        modelBuilder.Entity<Activity>().ToTable("Activity");
-        modelBuilder.Entity<ProjectTimeSummary>().ToTable("ProjectTimeSummary");
+    protected override void OnModelCreating(ModelBuilder builder) {
+        builder.Entity<Project>().ToTable("Project");
+        builder.Entity<Subproject>().ToTable("Subproject");
+        builder.Entity<MonthReport>().ToTable("MonthReport");
+        builder.Entity<Activity>().ToTable("Activity");
+        // TODO(@pochka15): I don't like  ProjectCodeAndTime & ProjectTime database name
+        builder.Entity<ProjectCodeAndTime>().ToTable("ProjectTime");
     }
 }
 }

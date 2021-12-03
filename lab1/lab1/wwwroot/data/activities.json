@@ -2,7 +2,7 @@
   "activities": [
     {
       "Code": "ARGUS-123",
-      "Owner": null,
+      "Owner": "kowalski",
       "Name": "Argus",
       "Budget": 125,
       "Active": true,
@@ -18,9 +18,9 @@
     },
     {
       "Code": "OTHER",
-      "Owner": null,
+      "Owner": "kowalski",
       "Name": "Other",
-      "Budget": -1,
+      "Budget": 10,
       "Active": true,
       "Cost": 20,
       "SubActivities": []

@@ -34,10 +34,11 @@ public class Startup {
             options.Cookie.IsEssential = true;
         });
 
-        services.AddDbContext<MainContext>(options =>
-            options.UseMySql(
-                ServerVersion.AutoDetect(
-                    Configuration.GetConnectionString("DefaultConnection"))));
+        services.AddDbContext<MainContext>(options => {
+            var connectionString = Configuration.GetConnectionString("DefaultConnection");
+            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+            options.EnableSensitiveDataLogging();
+        });
 
         services.AddDatabaseDeveloperPageExceptionFilter();
     }

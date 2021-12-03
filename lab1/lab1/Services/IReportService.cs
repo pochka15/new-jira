@@ -17,7 +17,7 @@ public interface IReportService {
         return (from activity in activities select activity.Time).Sum();
     }
 
-    static int CalcOverallAcceptedTime(IEnumerable<ProjectTimeSummary> timeSummaries) {
+    static int CalcOverallAcceptedTime(IEnumerable<ProjectCodeAndTime> timeSummaries) {
         return (from projectTime in timeSummaries select projectTime.Time).Sum();
     }
 }

@@ -33,7 +33,7 @@ public class ProjectController : Controller {
 
     [HttpGet]
     public IActionResult Index(string code) {
-        var project = _projectService.GetProjectByCode(code)!;
+        var project = _projectService.GetProjectById(code)!;
         return View(new ProjectViewModel {
             Cost = project.Cost,
             ProjectName = project.Name,

@@ -17,7 +17,7 @@ public class SampleTest {
         const string dataRoot = "";
         Assert.Equal("Argus",
             new JsonProjectService(new DataPathSrc(dataRoot), null)
-                .GetProjectByCode("ARGUS-123")
+                .GetProjectById("ARGUS-123")
                 ?.Name);
     }
 }
