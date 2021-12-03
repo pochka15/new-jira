@@ -13,7 +13,7 @@ public static class DbInitializer {
         if (isDbSeeded) return;
 
         foreach (var p in projectService.GetAllProjects()) {
-            context.Projects.Add(p);
+            context.Projects.Add(p.ToModel());
         }
 
         context.SaveChanges();

@@ -68,7 +68,7 @@ public class JsonProjectService : IProjectService {
     }
 
     public void UpdateCost(string projectId, int cost) {
-        var projects = GetAllProjects().ToList();
+        var projects = GetProjectModels().ToList();
         var project = projects.FirstOrDefault(it => it.Id == projectId);
         if (project != null) project.Cost = cost;
 
@@ -76,7 +76,7 @@ public class JsonProjectService : IProjectService {
             JsonSerializer.Serialize(new ProjectsContainer {Projects = projects}));
     }
 
-    public int CalcLeftBudget(Project project) {
+    public int CalcLeftBudget(ProjectDto project) {
         return project.Budget - CalcOverallAcceptedTime(project.Id) * project.Cost;
     }
 
@@ -95,7 +95,7 @@ public class JsonProjectService : IProjectService {
     }
 
     public void CloseProject(string projectId) {
-        var projects = GetAllProjects().ToList();
+        var projects = GetProjectModels().ToList();
         foreach (var p
                  in projects.Where(p => p.Id == projectId)) {
             p.IsActive = false;
@@ -108,24 +108,24 @@ public class JsonProjectService : IProjectService {
             }));
     }
 
-    public IEnumerable<Project> GetActiveProjects() {
+    public IEnumerable<ProjectDto> GetActiveProjects() {
         return GetAllProjects()
             .Where(it => it.IsActive);
     }
 
-    public IEnumerable<Project> GetManagedProjects(string manager) {
+    public IEnumerable<ProjectDto> GetManagedProjects(string manager) {
         return GetAllProjects()
             .Where(it => it.Manager == manager);
     }
 
-    public Project? GetProjectById(string id) {
+    public ProjectDto? GetProjectById(string id) {
         return GetAllProjects().FirstOrDefault(it => it.Id == id);
     }
 
-    public Project CreateProject(CreateProjectDto dto) {
-        var projects = GetAllProjects().ToList();
+    public void CreateProject(CreateProjectDto dto) {
+        var projects = GetProjectModels().ToList();
         var project = projects.FirstOrDefault(p => p.Id == dto.Code);
-        if (project != null) return project;
+        if (project != null) return;
 
         var split = dto.SubprojectCodes.Split(
             ',',
@@ -144,10 +144,14 @@ public class JsonProjectService : IProjectService {
             JsonSerializer.Serialize(new ProjectsContainer {
                 Projects = projects
             }));
-        return project;
     }
 
-    public IEnumerable<Project> GetAllProjects() {
+    public IEnumerable<ProjectDto> GetAllProjects() {
+        return GetProjectModels()
+            .Select(it => it.ToProjectDto());
+    }
+
+    private IEnumerable<Project> GetProjectModels() {
         return Directory.EnumerateFiles(
                 _dataRoot, "activities.json", SearchOption.TopDirectoryOnly)
             .SelectMany(DeserializeProjects);

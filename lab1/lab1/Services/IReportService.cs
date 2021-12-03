@@ -13,7 +13,7 @@ public interface IReportService {
     MonthStatistics GetMonthStatistics(ReportOrigin origin);
     public MonthReportWithOrigin CreateBlankReport(ReportOrigin origin);
     void SubmitMonthActivities(ReportOrigin origin);
-    IEnumerable<ReportOriginWithMeta> GetReportOriginsWithMeta(string projectCode);
+    IEnumerable<ReportOriginWithMeta> GetReportOriginsWithMeta(string projectId);
 
     static int SumTime(IEnumerable<Activity> activities) {
         return (from activity in activities select activity.Time).Sum();

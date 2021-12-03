@@ -19,25 +19,28 @@ public class DbProjectService : IProjectService {
         _reportService = reportService;
     }
 
-    public Project? GetProjectById(string id) {
+    public ProjectDto? GetProjectById(string id) {
         return _ctx.Projects
-            .FirstOrDefault(it => it.Id == id);
+            .FirstOrDefault(it => it.Id == id)
+            ?.ToProjectDto();
     }
 
-    public IEnumerable<Project> GetActiveProjects() {
+    public IEnumerable<ProjectDto> GetActiveProjects() {
         return _ctx.Projects
-            .Where(it => it.IsActive);
+            .Where(it => it.IsActive)
+            .Select(it => it.ToProjectDto());
     }
 
-    public IEnumerable<Project> GetManagedProjects(string manager) {
+    public IEnumerable<ProjectDto> GetManagedProjects(string manager) {
         return _ctx.Projects
-            .Where(it => it.Manager == manager);
+            .Where(it => it.Manager == manager)
+            .Select(it => it.ToProjectDto());
     }
 
-    public Project CreateProject(CreateProjectDto dto) {
+    public void CreateProject(CreateProjectDto dto) {
         var project = _ctx.Projects
             .FirstOrDefault(it => it.Id == dto.Code);
-        if (project != null) return project;
+        if (project != null) return;
 
         var split = dto.SubprojectCodes.Split(
             ',',
@@ -54,7 +57,6 @@ public class DbProjectService : IProjectService {
 
         _ctx.Projects.Add(project);
         _ctx.SaveChanges();
-        return project;
     }
 
     public void DeleteActivityMatching(ReportOrigin reportOrigin, Predicate<Activity> pred) {
@@ -86,7 +88,7 @@ public class DbProjectService : IProjectService {
         throw new NotImplementedException();
     }
 
-    public int CalcLeftBudget(Project project) {
+    public int CalcLeftBudget(ProjectDto project) {
         throw new NotImplementedException();
     }
 
@@ -98,7 +100,7 @@ public class DbProjectService : IProjectService {
         throw new NotImplementedException();
     }
 
-    public IEnumerable<Project> GetAllProjects() {
+    public IEnumerable<ProjectDto> GetAllProjects() {
         throw new NotImplementedException();
     }
 }

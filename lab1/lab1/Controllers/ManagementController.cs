@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using lab1.Dtos.Others;
-using lab1.Extensions;
 using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Http;

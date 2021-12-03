@@ -83,11 +83,11 @@ public class JsonReportService : IReportService {
         File.WriteAllText(path, JsonSerializer.Serialize(report));
     }
 
-    public IEnumerable<ReportOriginWithMeta> GetReportOriginsWithMeta(string projectCode) {
+    public IEnumerable<ReportOriginWithMeta> GetReportOriginsWithMeta(string projectId) {
         return GetAllReports()
             .Select(it => {
                 it.Activities = it.Activities
-                    .Where(activity => activity.ProjectCode == projectCode)
+                    .Where(activity => activity.ProjectCode == projectId)
                     .ToList();
                 return it;
             })
@@ -97,7 +97,7 @@ public class JsonReportService : IReportService {
                 Year = it.Origin.Year,
                 Month = it.Origin.Month,
                 Time = IReportService.SumTime(it.Activities),
-                AcceptedTime = ExtractSummary(projectCode, it).Time,
+                AcceptedTime = ExtractSummary(projectId, it).Time,
                 IsFrozen = it.IsFrozen
             });
     }
