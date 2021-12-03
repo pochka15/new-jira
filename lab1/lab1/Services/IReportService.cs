@@ -8,10 +8,10 @@ using lab1.Models;
 namespace lab1.Services {
 public interface IReportService {
     DayActivities? GetDayReport(ReportOrigin origin, int day);
-    MonthReportWithoutOrigin? GetMonthReport(ReportOrigin origin);
+    MonthReportWithOrigin? GetMonthReport(ReportOrigin origin);
     IEnumerable<MonthReportWithOrigin> GetAllReports();
     MonthStatistics GetMonthStatistics(ReportOrigin origin);
-    public MonthReportWithoutOrigin CreateBlankReport(ReportOrigin origin);
+    public MonthReportWithOrigin CreateBlankReport(ReportOrigin origin);
     void SubmitMonthActivities(ReportOrigin origin);
     IEnumerable<ReportOriginWithMeta> GetReportOriginsWithMeta(string projectCode);
 

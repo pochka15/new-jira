@@ -37,12 +37,12 @@ public class JsonReportService : IReportService {
         };
     }
 
-    public MonthReportWithoutOrigin? GetMonthReport(ReportOrigin origin) {
+    public MonthReportWithOrigin? GetMonthReport(ReportOrigin origin) {
         var root = Path.Combine(_dataRoot, "activities");
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
         var query = from path in files
             where Path.GetFileName(path).Equals(GetReportFileName(origin))
-            select DeserializeReport(path);
+            select DeserializeReportWithOrigin(path);
         return query.FirstOrDefault();
     }
 
@@ -61,15 +61,16 @@ public class JsonReportService : IReportService {
         };
     }
 
-    public MonthReportWithoutOrigin CreateBlankReport(ReportOrigin origin) {
+    public MonthReportWithOrigin CreateBlankReport(ReportOrigin origin) {
         var report = GetMonthReport(origin);
         if (report != null) return report;
 
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
-        report = new MonthReportWithoutOrigin {
+        report = new MonthReportWithOrigin {
             Activities = new List<Activity>(),
             IsFrozen = false,
-            AcceptedWork = new List<ProjectCodeAndTime>()
+            AcceptedWork = new List<ProjectCodeAndTime>(),
+            Origin = origin
         };
         File.WriteAllText(path, JsonSerializer.Serialize(report));
         return report;

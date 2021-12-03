@@ -1,8 +1,9 @@
+using System.Text.Json.Serialization;
 using lab1.Models;
 
 namespace lab1.Dtos.Report {
 public class MonthReportWithOrigin : MonthReportWithoutOrigin {
-    public ReportOrigin Origin { get; set; }
+    [JsonIgnore] public ReportOrigin Origin { get; set; }
 
     public MonthReport ToMonthReport() {
         return new MonthReport {
