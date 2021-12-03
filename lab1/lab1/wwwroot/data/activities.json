@@ -5,7 +5,7 @@
       "Owner": "kowalski",
       "Name": "Argus",
       "Budget": 125,
-      "Active": true,
+      "Active": false,
       "Cost": 10,
       "SubActivities": [
         {
@@ -21,7 +21,7 @@
       "Owner": "kowalski",
       "Name": "Other",
       "Budget": 10,
-      "Active": true,
+      "Active": false,
       "Cost": 20,
       "SubActivities": []
     }

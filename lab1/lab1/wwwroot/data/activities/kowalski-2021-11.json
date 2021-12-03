@@ -1,55 +1,30 @@
 {
-  "frozen": false,
-  "entries": [
+  "Frozen": false,
+  "Entries": [
     {
-      "id": 1,
-      "date": "2021-11-07",
+      "Id": 1,
+      "Date": "2021-11-07",
       "code": "ARGUS-123",
-      "subCode": "database",
-      "time": 45,
-      "description": "data import"
+      "SubprojectCode": "kek",
+      "Time": 5,
+      "Description": "data import"
     },
     {
-      "id": 2,
-      "date": "2021-11-07",
+      "Id": 2,
+      "Date": "2021-11-07",
       "code": "OTHER",
-      "subCode": "",
-      "time": 120,
-      "description": "picie kawy"
+      "SubprojectCode": "lol",
+      "Time": 120,
+      "Description": "picie kawy"
     },
     {
-      "id": 3,
-      "date": "2021-11-08",
+      "Id": 5,
+      "Date": "2021-11-12",
       "code": "ARGUS-123",
-      "subCode": "",
-      "time": 45,
-      "description": "kompilacja"
-    },
-    {
-      "id": 4,
-      "date": "2021-11-08",
-      "code": "OTHER",
-      "subCode": "",
-      "time": 120,
-      "description": "office arrangement"
-    },
-    {
-      "id": 5,
-      "date": "2021-11-12",
-      "code": "ARGUS-123",
-      "subCode": "other",
-      "time": 45,
-      "description": "project meeting"
+      "SubprojectCode": null,
+      "Time": 45,
+      "Description": "project meeting"
     }
   ],
-  "accepted": [
-    {
-      "code": "ARGUS-123",
-      "time": 100
-    },
-    {
-      "code": "OTHER",
-      "time": 110
-    }
-  ]
+  "Accepted": []
 }

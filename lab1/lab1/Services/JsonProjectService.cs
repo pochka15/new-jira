@@ -153,9 +153,9 @@ public class JsonProjectService : IProjectService {
             .SelectMany(DeserializeProjects);
     }
 
-    private void Store(MonthReport report, ReportOrigin origin) {
+    private void Store(MonthReportWithoutOrigin reportWithoutOrigin, ReportOrigin origin) {
         var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
-        File.WriteAllText(path, JsonSerializer.Serialize(report));
+        File.WriteAllText(path, JsonSerializer.Serialize(reportWithoutOrigin));
     }
 
     private int CalcOverallAcceptedTime(string projectCode) {
