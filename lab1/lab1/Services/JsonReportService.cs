@@ -25,7 +25,8 @@ public class JsonReportService : IReportService {
         var root = Path.Combine(_dataRoot, "activities");
         var files = Directory.EnumerateFiles(root, "*.*", SearchOption.AllDirectories);
         var query = from path in files
-            where Path.GetFileName(path).Equals(origin.UserName + "-" + origin.Year + "-" + origin.Month + ".json")
+            where Path.GetFileNameWithoutExtension(path)
+                .Equals(origin.UserName + "-" + origin.Year + "-" + origin.Month)
             select DeserializeReport(path, origin);
         var report = query.FirstOrDefault();
 
@@ -75,7 +76,7 @@ public class JsonReportService : IReportService {
             AcceptedWork = new List<ProjectCodeAndTime>(),
             Origin = origin
         };
-        File.WriteAllText(path, JsonSerializer.Serialize(report));
+        Store(path, report.ToModel());
         return report;
     }
 
@@ -83,7 +84,7 @@ public class JsonReportService : IReportService {
         var report = GetMonthReport(origin)!;
         report.IsFrozen = true;
         var path = Path.Combine(_dataRoot, "activities", GetReportFileName(origin));
-        File.WriteAllText(path, JsonSerializer.Serialize(report));
+        Store(path, report.ToModel());
     }
 
     public IEnumerable<ReportOriginWithMeta> GetReportOriginsWithMeta(string projectId) {
@@ -96,6 +97,10 @@ public class JsonReportService : IReportService {
             })
             .Where(it => it.Activities.Any())
             .Select(it => it.ToReportOriginWithMeta(projectId));
+    }
+
+    private static void Store(string path, MonthReport report) {
+        File.WriteAllText(path, JsonSerializer.Serialize(report));
     }
 
     private static ReportOrigin ParseReportOrigin(string path) {

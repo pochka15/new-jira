@@ -44,10 +44,11 @@ public class JsonProjectService : IProjectService {
         var report = _reportService.GetMonthReport(origin)!;
         var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
 
-        report.Activities = report.Activities
-            .Where(it => pred(it.ToModel()))
+        var model = report.ToModel();
+        model.Activities = model.Activities
+            .Where(it => pred(it))
             .ToList();
-        File.WriteAllText(path, JsonSerializer.Serialize(report));
+        Store(path, model);
     }
 
     public void AddActivity(ReportOrigin origin, AddActivityDto dto) {
@@ -58,8 +59,8 @@ public class JsonProjectService : IProjectService {
         var path = Path.Combine(_dataRoot, "activities", JsonReportService.GetReportFileName(origin));
         var id = GetNextId(reportDto.Activities);
 
-        var report = reportDto.ToModel();
-        report.Activities
+        var model = reportDto.ToModel();
+        model.Activities
             .Add(new Activity {
                 Id = id,
                 Date = string.Join('/', origin.Year, origin.Month, dto.Day),
@@ -68,7 +69,7 @@ public class JsonProjectService : IProjectService {
                 Time = dto.SpentTime,
                 Description = dto.Description
             });
-        File.WriteAllText(path, JsonSerializer.Serialize(report));
+        Store(path, model);
     }
 
     public void UpdateCost(string projectId, int cost) {
@@ -76,8 +77,8 @@ public class JsonProjectService : IProjectService {
         var project = projects.FirstOrDefault(it => it.Id == projectId);
         if (project != null) project.Cost = cost;
 
-        File.WriteAllText(Path.Combine(_dataRoot, "activities.json"),
-            JsonSerializer.Serialize(new ProjectsContainer {Projects = projects}));
+        var path = Path.Combine(_dataRoot, "activities.json");
+        Store(path, projects);
     }
 
     public int CalcLeftBudget(ProjectDto project) {
@@ -106,10 +107,8 @@ public class JsonProjectService : IProjectService {
             break;
         }
 
-        File.WriteAllText(Path.Combine(_dataRoot, "activities.json"),
-            JsonSerializer.Serialize(new ProjectsContainer {
-                Projects = projects
-            }));
+        var path = Path.Combine(_dataRoot, "activities.json");
+        Store(path, projects);
     }
 
     public IEnumerable<ProjectDto> GetActiveProjects() {
@@ -144,15 +143,20 @@ public class JsonProjectService : IProjectService {
             Budget = dto.Budget
         };
         projects.Add(project);
-        File.WriteAllText(Path.Combine(_dataRoot, "activities.json"),
-            JsonSerializer.Serialize(new ProjectsContainer {
-                Projects = projects
-            }));
+        Store(Path.Combine(_dataRoot, "activities.json"), projects);
     }
 
     public IEnumerable<ProjectDto> GetAllProjects() {
         return GetProjectModels()
             .Select(it => it.ToProjectDto());
+    }
+
+    private static void Store(string path, MonthReport report) {
+        File.WriteAllText(path, JsonSerializer.Serialize(report));
+    }
+
+    private static void Store(string path, List<Project> projects) {
+        File.WriteAllText(path, JsonSerializer.Serialize(new ProjectsContainer {Projects = projects}));
     }
 
     private IEnumerable<Project> GetProjectModels() {
