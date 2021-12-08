@@ -66,6 +66,7 @@ public class DbReportService : IReportService {
             AcceptedWork = new List<ProjectCodeAndTime>(),
         };
         _ctx.MonthReports.Add(report);
+        _ctx.SaveChanges();
         return report.ToMonthReportWithOrigin();
     }
 

@@ -7,6 +7,7 @@ public class MainContext : DbContext {
 
     public DbSet<Project> Projects { get; set; }
     public DbSet<MonthReport> MonthReports { get; set; }
+    public DbSet<Activity> Activities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder) {
         builder.Entity<Project>().ToTable("Project");

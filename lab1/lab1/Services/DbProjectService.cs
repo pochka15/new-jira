@@ -63,8 +63,9 @@ public class DbProjectService : IProjectService {
 
     public void DeleteActivityMatching(ReportOrigin reportOrigin, Predicate<Activity> pred) {
         var report = RepositoryUtils.GetReportWithActivities(reportOrigin, _ctx);
-        if (report == null) return;
-        report.Activities.Remove(report.Activities.FirstOrDefault(pred.Invoke));
+        var entity = report?.Activities.FirstOrDefault(pred.Invoke);
+        if (entity == null) return;
+        _ctx.Activities.Remove(entity);
         _ctx.SaveChanges();
     }
 

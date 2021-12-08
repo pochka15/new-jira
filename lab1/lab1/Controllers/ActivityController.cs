@@ -96,7 +96,7 @@ public class ActivityController : Controller {
         };
         var addActivityDto = new AddActivityDto {
             ProjectCode = projectCode,
-            SubprojectCode = subprojectCode ?? "",
+            SubprojectCode = subprojectCode,
             SpentTime = spentTime,
             Description = description ?? "",
             Day = state.Day.Value
