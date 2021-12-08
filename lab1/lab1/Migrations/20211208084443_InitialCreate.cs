@@ -16,6 +16,10 @@ namespace lab1.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    UserName = table.Column<string>(type: "longtext", nullable: true)
+                        .Annotation("MySql:CharSet", "utf8mb4"),
+                    Year = table.Column<int>(type: "int", nullable: false),
+                    Month = table.Column<int>(type: "int", nullable: false),
                     IsFrozen = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
@@ -74,21 +78,19 @@ namespace lab1.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.CreateTable(
-                name: "ProjectTimeSummary",
+                name: "ProjectTime",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    ProjectCode = table.Column<string>(type: "longtext", nullable: true)
+                    Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Time = table.Column<int>(type: "int", nullable: false),
                     MonthReportId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProjectTimeSummary", x => x.Id);
+                    table.PrimaryKey("PK_ProjectTime", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProjectTimeSummary_MonthReport_MonthReportId",
+                        name: "FK_ProjectTime_MonthReport_MonthReportId",
                         column: x => x.MonthReportId,
                         principalTable: "MonthReport",
                         principalColumn: "Id",
@@ -123,8 +125,8 @@ namespace lab1.Migrations
                 column: "MonthReportId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_ProjectTimeSummary_MonthReportId",
-                table: "ProjectTimeSummary",
+                name: "IX_ProjectTime_MonthReportId",
+                table: "ProjectTime",
                 column: "MonthReportId");
 
             migrationBuilder.CreateIndex(
@@ -139,7 +141,7 @@ namespace lab1.Migrations
                 name: "Activity");
 
             migrationBuilder.DropTable(
-                name: "ProjectTimeSummary");
+                name: "ProjectTime");
 
             migrationBuilder.DropTable(
                 name: "Subproject");

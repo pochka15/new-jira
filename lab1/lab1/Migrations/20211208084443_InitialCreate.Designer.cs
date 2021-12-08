@@ -9,7 +9,7 @@ using lab1.Models.Data;
 namespace lab1.Migrations
 {
     [DbContext(typeof(MainContext))]
-    [Migration("20211203123022_InitialCreate")]
+    [Migration("20211208084443_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -59,6 +59,15 @@ namespace lab1.Migrations
                     b.Property<bool>("IsFrozen")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<int>("Month")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("longtext");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("MonthReport");
@@ -89,17 +98,13 @@ namespace lab1.Migrations
                     b.ToTable("Project");
                 });
 
-            modelBuilder.Entity("lab1.Models.ProjectTimeSummary", b =>
+            modelBuilder.Entity("lab1.Models.ProjectCodeAndTime", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("varchar(255)");
 
                     b.Property<int?>("MonthReportId")
                         .HasColumnType("int");
-
-                    b.Property<string>("ProjectCode")
-                        .HasColumnType("longtext");
 
                     b.Property<int>("Time")
                         .HasColumnType("int");
@@ -108,7 +113,7 @@ namespace lab1.Migrations
 
                     b.HasIndex("MonthReportId");
 
-                    b.ToTable("ProjectTimeSummary");
+                    b.ToTable("ProjectTime");
                 });
 
             modelBuilder.Entity("lab1.Models.Subproject", b =>
@@ -133,10 +138,10 @@ namespace lab1.Migrations
                         .HasForeignKey("MonthReportId");
                 });
 
-            modelBuilder.Entity("lab1.Models.ProjectTimeSummary", b =>
+            modelBuilder.Entity("lab1.Models.ProjectCodeAndTime", b =>
                 {
                     b.HasOne("lab1.Models.MonthReport", null)
-                        .WithMany("TimeSummaries")
+                        .WithMany("AcceptedWork")
                         .HasForeignKey("MonthReportId");
                 });
 
@@ -149,9 +154,9 @@ namespace lab1.Migrations
 
             modelBuilder.Entity("lab1.Models.MonthReport", b =>
                 {
-                    b.Navigation("Activities");
+                    b.Navigation("AcceptedWork");
 
-                    b.Navigation("TimeSummaries");
+                    b.Navigation("Activities");
                 });
 
             modelBuilder.Entity("lab1.Models.Project", b =>
