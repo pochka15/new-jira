@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using lab1.Dtos.Report;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace lab1.Models {

@@ -2,6 +2,7 @@
 using System.Linq;
 using lab1.Dtos.Others;
 using lab1.Dtos.Project;
+using lab1.Dtos.Report;
 using lab1.Models;
 using lab1.Services;
 using Microsoft.AspNetCore.Http;

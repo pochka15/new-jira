@@ -45,9 +45,9 @@ public class ActivityController : Controller {
     }
 
     [HttpPost]
-    public IActionResult Delete(int activityId, ReportOrigin reportOrigin) {
+    public IActionResult Delete(int activityId, ReportOrigin origin) {
         _projectService.DeleteActivityMatching(
-            reportOrigin,
+            origin,
             it => it.Id == activityId
         );
         return RedirectToAction("Index", "Home");
@@ -57,10 +57,17 @@ public class ActivityController : Controller {
     /// Edit activity form
     /// </summary>
     /// <param name="activityId">activity id</param>
-    /// <param name="reportOrigin">report origin</param>
+    /// <param name="year">report origin year</param>
+    /// <param name="month">report origin month</param>
+    /// <param name="userName">report origin userName</param>
     /// <returns>A view containing the edit activity form</returns>
     [HttpGet]
-    public IActionResult Edit(int activityId, ReportOrigin reportOrigin) {
+    public IActionResult ActivityDescription(int activityId, int year, int month, string userName) {
+        var reportOrigin = new ReportOrigin {
+            UserName = userName,
+            Year = year,
+            Month = month
+        };
         var report = _reportService.GetMonthReport(reportOrigin);
         var activity = report
             ?.Activities.Find(it => it.Id == activityId);

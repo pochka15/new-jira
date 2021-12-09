@@ -1,5 +1,6 @@
 #nullable enable
 using System.Linq;
+using lab1.Dtos.Report;
 using lab1.Models;
 using lab1.Models.Data;
 using Microsoft.EntityFrameworkCore;

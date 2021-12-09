@@ -76,3 +76,9 @@ body {
 .bottom-margin {
     margin-bottom: 20px;
 }
+
+#change_date_btn {
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 2px;
+}

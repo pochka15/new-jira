@@ -1,3 +1,5 @@
+using lab1.Dtos.Report;
+
 namespace lab1.Models {
 public class AcceptTimeViewModel {
     public ReportOrigin Origin { get; set; }

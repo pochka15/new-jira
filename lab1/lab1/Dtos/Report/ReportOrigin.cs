@@ -1,6 +1,4 @@
-// TODO(@pochka15): move to dtos
-
-namespace lab1.Models {
+namespace lab1.Dtos.Report {
 public class ReportOrigin {
     public string UserName { get; set; }
     public int Year { get; set; }
