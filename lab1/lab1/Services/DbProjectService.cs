@@ -69,7 +69,6 @@ public class DbProjectService : IProjectService {
         _ctx.SaveChanges();
     }
 
-    // TODO(@pochka15): test it
     public void EditActivity(ReportOrigin reportOrigin, EditActivityDto dto) {
         var activity = RepositoryUtils.GetReportWithActivities(reportOrigin, _ctx)
             ?.Activities
@@ -121,15 +120,15 @@ public class DbProjectService : IProjectService {
         var report = RepositoryUtils.GetReportWithAcceptedWork(origin, _ctx);
         if (report == null) return;
 
-        var summary = report.AcceptedWork
-            .FirstOrDefault(it => it.Id == projectId);
+        var summary = report.AcceptedWorks
+            .FirstOrDefault(it => it.ProjectId == projectId);
         if (summary == null) {
-            var newOne = new ProjectCodeAndTime(projectId, time);
-            report.AcceptedWork.Add(newOne);
+            var newOne = new AcceptedWork(projectId, time);
+            report.AcceptedWorks.Add(newOne);
             summary = newOne;
         }
 
-        summary.Time = time;
+        summary.SpentTime = time;
         _ctx.SaveChanges();
     }
 
@@ -153,8 +152,8 @@ public class DbProjectService : IProjectService {
     private int CalcOverallAcceptedTime(string projectCode) {
         return _reportService.GetAllReports()
             .SelectMany(it => it.AcceptedWork)
-            .Where(it => it.Id == projectCode)
-            .Select(it => it.Time)
+            .Where(it => it.ProjectId == projectCode)
+            .Select(it => it.SpentTime)
             .Sum();
     }
 }

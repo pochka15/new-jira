@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text.Json.Serialization;
 using lab1.Dtos.Project;
@@ -12,6 +13,8 @@ public class Project {
     [JsonPropertyName("Active")] public bool IsActive { get; set; }
     public int Cost { get; set; }
     [JsonPropertyName("SubActivities")] public List<Subproject> Subprojects { get; set; } = new();
+
+    [Timestamp] public byte[] RowVersion { get; set; }
 
     public ProjectDto ToProjectDto() {
         return new ProjectDto {

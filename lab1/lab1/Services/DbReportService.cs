@@ -38,7 +38,7 @@ public class DbReportService : IReportService {
     public IEnumerable<MonthReportWithOrigin> GetAllReports() {
         return _ctx.MonthReports
             .Include(it => it.Activities)
-            .Include(it => it.AcceptedWork)
+            .Include(it => it.AcceptedWorks)
             .Select(it => it.ToMonthReportWithOrigin())
             .ToList();
     }
@@ -57,13 +57,12 @@ public class DbReportService : IReportService {
         if (report != null) return report.ToMonthReportWithOrigin();
 
         report = new MonthReport {
-            // TODO(@pochka15): what's with the id? will it generated?
             UserName = origin.UserName,
             Year = origin.Year,
             Month = origin.Month,
             Activities = new List<Activity>(),
             IsFrozen = false,
-            AcceptedWork = new List<ProjectCodeAndTime>(),
+            AcceptedWorks = new List<AcceptedWork>(),
         };
         _ctx.MonthReports.Add(report);
         _ctx.SaveChanges();

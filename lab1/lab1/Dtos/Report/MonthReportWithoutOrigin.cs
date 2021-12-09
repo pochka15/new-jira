@@ -8,6 +8,6 @@ public class MonthReportWithoutOrigin {
 
     public List<ActivityDto> Activities { get; set; }
 
-    public List<ProjectCodeAndTime> AcceptedWork { get; set; }
+    public List<AcceptedWork> AcceptedWork { get; set; }
 }
 }

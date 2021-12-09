@@ -13,7 +13,7 @@ public class MonthReportWithOrigin : MonthReportWithoutOrigin {
             Month = Origin.Month,
             IsFrozen = IsFrozen,
             Activities = Activities.Select(it => it.ToModel()).ToList(),
-            AcceptedWork = AcceptedWork
+            AcceptedWorks = AcceptedWork
         };
     }
 
@@ -23,7 +23,7 @@ public class MonthReportWithOrigin : MonthReportWithoutOrigin {
             Year = Origin.Year,
             Month = Origin.Month,
             Time = IReportService.SumTime(Activities),
-            AcceptedTime = JsonReportService.ExtractSummary(projectId, this).Time,
+            AcceptedTime = JsonReportService.ExtractSummary(projectId, this).SpentTime,
             IsFrozen = IsFrozen
         };
     }

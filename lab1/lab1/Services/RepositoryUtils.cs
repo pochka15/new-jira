@@ -17,7 +17,7 @@ public static class RepositoryUtils {
 
     public static MonthReport? GetReportWithAcceptedWork(ReportOrigin reportOrigin, MainContext ctx) {
         return ctx.MonthReports
-            .Include(it => it.AcceptedWork)
+            .Include(it => it.AcceptedWorks)
             .FirstOrDefault(it => it.Year == reportOrigin.Year
                                   && it.Month == reportOrigin.Month
                                   && it.UserName == reportOrigin.UserName);
@@ -33,7 +33,7 @@ public static class RepositoryUtils {
     public static MonthReport? GetReportWithActivitiesAndAcceptedWork(ReportOrigin origin, MainContext ctx) {
         return ctx.MonthReports
             .Include(it => it.Activities)
-            .Include(it => it.AcceptedWork)
+            .Include(it => it.AcceptedWorks)
             .FirstOrDefault(it => it.Year == origin.Year
                                   && it.Month == origin.Month
                                   && it.UserName == origin.UserName);

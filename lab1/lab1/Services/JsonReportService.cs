@@ -73,7 +73,7 @@ public class JsonReportService : IReportService {
         report = new MonthReportWithOrigin {
             Activities = new List<ActivityDto>(),
             IsFrozen = false,
-            AcceptedWork = new List<ProjectCodeAndTime>(),
+            AcceptedWork = new List<AcceptedWork>(),
             Origin = origin
         };
         Store(path, report.ToModel());
@@ -114,7 +114,7 @@ public class JsonReportService : IReportService {
 
     public static Dictionary<string, int> GetProjectToAcceptedTime(MonthReportWithoutOrigin reportWithoutOrigin) {
         var groups = from activity in reportWithoutOrigin.AcceptedWork
-            group activity by activity.Id
+            group activity by activity.ProjectId
             into projectGroup
             select projectGroup;
         return groups.ToDictionary(
@@ -148,10 +148,10 @@ public class JsonReportService : IReportService {
         return report;
     }
 
-    public static ProjectCodeAndTime ExtractSummary(string projectCode, MonthReportWithoutOrigin reportWithoutOrigin) {
+    public static AcceptedWork ExtractSummary(string projectCode, MonthReportWithoutOrigin reportWithoutOrigin) {
         return reportWithoutOrigin.AcceptedWork
-                   .FirstOrDefault(s => s.Id == projectCode)
-               ?? new ProjectCodeAndTime(projectCode);
+                   .FirstOrDefault(s => s.ProjectId == projectCode)
+               ?? new AcceptedWork(projectCode);
     }
 }
 }

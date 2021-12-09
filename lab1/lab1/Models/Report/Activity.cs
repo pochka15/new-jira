@@ -14,6 +14,8 @@ public class Activity {
 
     [Required] public string Description { get; set; }
 
+    [Timestamp] public byte[] RowVersion { get; set; }
+
     public ActivityDto ToActivityDto() {
         return new ActivityDto {
             Id = Id,

@@ -88,14 +88,14 @@ public class JsonProjectService : IProjectService {
     public void AcceptTime(ReportOrigin origin, string projectId, int time) {
         var report = _reportService.GetMonthReport(origin)!;
         var summary = report.AcceptedWork
-            .FirstOrDefault(it => it.Id == projectId);
+            .FirstOrDefault(it => it.ProjectId == projectId);
         if (summary == null) {
-            var newOne = new ProjectCodeAndTime(projectId, time);
+            var newOne = new AcceptedWork(projectId, time);
             report.AcceptedWork.Add(newOne);
             summary = newOne;
         }
 
-        summary.Time = time;
+        summary.SpentTime = time;
         Store(report.ToModel(), origin);
     }
 
@@ -173,8 +173,8 @@ public class JsonProjectService : IProjectService {
     private int CalcOverallAcceptedTime(string projectCode) {
         return _reportService.GetAllReports()
             .SelectMany(it => it.AcceptedWork)
-            .Where(it => it.Id == projectCode)
-            .Select(it => it.Time)
+            .Where(it => it.ProjectId == projectCode)
+            .Select(it => it.SpentTime)
             .Sum();
     }
 

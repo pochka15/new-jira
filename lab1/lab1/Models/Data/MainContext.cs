@@ -10,12 +10,14 @@ public class MainContext : DbContext {
     public DbSet<Activity> Activities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder) {
-        builder.Entity<Project>().ToTable("Project");
+        builder.Entity<Project>().ToTable("Project")
+            .Property(it => it.RowVersion).IsConcurrencyToken();
         builder.Entity<Subproject>().ToTable("Subproject");
-        builder.Entity<MonthReport>().ToTable("MonthReport");
-        builder.Entity<Activity>().ToTable("Activity");
-        // TODO(@pochka15): I don't like  ProjectCodeAndTime & ProjectTime database name
-        builder.Entity<ProjectCodeAndTime>().ToTable("ProjectTime");
+        builder.Entity<MonthReport>().ToTable("MonthReport")
+            .Property(it => it.RowVersion).IsConcurrencyToken();
+        builder.Entity<Activity>().ToTable("Activity")
+            .Property(it => it.RowVersion).IsConcurrencyToken();
+        builder.Entity<AcceptedWork>().ToTable("ProjectTime");
     }
 }
 }
