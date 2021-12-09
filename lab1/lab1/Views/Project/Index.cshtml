@@ -8,11 +8,15 @@
     <div class="row">
         @if (Model.ProjectIsActive) {
             <div class="col">
-                <a class="btn btn-primary"
-                   asp-action="CloseProject"
-                   asp-route-projectCode="@Model.ProjectCode">
-                    Close project
-                </a>
+                <form method="post">
+                    @Html.HiddenFor(m => m.ProjectCode)
+                    <button
+                        type="submit"
+                        class="btn btn-primary"
+                        asp-action="CloseProject">
+                        Close project
+                    </button>
+                </form>
             </div>
         }
         <div class="col">
@@ -65,7 +69,7 @@
                     @if (Model.ProjectIsActive) {
                         @if (origin.IsFrozen) {
                             <td>
-                                <a asp-action="AcceptTime"
+                                <a asp-action="TimeAcceptance"
                                    asp-route-year="@origin.Year"
                                    asp-route-month="@origin.Month"
                                    asp-route-userName="@origin.UserName"

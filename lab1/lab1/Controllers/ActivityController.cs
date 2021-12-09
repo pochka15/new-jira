@@ -35,7 +35,7 @@ public class ActivityController : Controller {
     }
 
     [HttpGet]
-    public IActionResult Add() {
+    public IActionResult NewActivity() {
         var model = new AddActivityViewModel {
             Projects = _projectService.GetActiveProjects()
                 .Select(it => it.ToSelectItem())
@@ -44,7 +44,7 @@ public class ActivityController : Controller {
         return View(model);
     }
 
-    [HttpGet]
+    [HttpPost]
     public IActionResult Delete(int activityId, ReportOrigin reportOrigin) {
         _projectService.DeleteActivityMatching(
             reportOrigin,

@@ -8,7 +8,7 @@
     <div class="row bottom-margin">
         @if (!Model.Frozen) {
             <div class="col">
-                <a class="btn btn-primary" hidden="@(!Model.CanAddActivity)" asp-controller="Activity" asp-action="Add">
+                <a class="btn btn-primary" hidden="@(!Model.CanAddActivity)" asp-controller="Activity" asp-action="NewActivity">
                     New activity
                 </a>
             </div>
@@ -48,7 +48,7 @@
     </div>
     <div class="row col">
         @foreach (var activity in Model.Activities) {
-            <form method="get">
+            <form method="post">
                 <input type="hidden" asp-for="ReportOrigin.Month" value="@(Model.Origin.Month)"/>
                 <input type="hidden" asp-for="ReportOrigin.Year" value="@(Model.Origin.Year)"/>
                 <input type="hidden" asp-for="ReportOrigin.UserName" value="@(Model.Origin.UserName)"/>

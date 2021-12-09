@@ -49,7 +49,7 @@ public class ProjectController : Controller {
         });
     }
 
-    [HttpGet]
+    [HttpPost]
     public IActionResult CloseProject(string projectCode) {
         _projectService.CloseProject(projectCode);
         return RedirectToAction("Index", new {code = projectCode});
@@ -80,7 +80,7 @@ public class ProjectController : Controller {
     }
 
     [HttpGet]
-    public IActionResult AcceptTime(int year, int month, string userName, string projectCode) {
+    public IActionResult TimeAcceptance(int year, int month, string userName, string projectCode) {
         var model = new AcceptTimeViewModel {
             Origin = new ReportOrigin {
                 UserName = userName,
@@ -93,7 +93,7 @@ public class ProjectController : Controller {
     }
 
     [HttpPost]
-    public IActionResult PostAcceptedTime(ReportOrigin origin, string projectCode, int acceptedTime) {
+    public IActionResult AcceptTime(ReportOrigin origin, string projectCode, int acceptedTime) {
         _projectService.AcceptTime(origin, projectCode, acceptedTime);
         return RedirectToAction("Index", new {code = projectCode});
     }
