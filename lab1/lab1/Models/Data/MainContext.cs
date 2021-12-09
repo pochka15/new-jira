@@ -10,13 +10,10 @@ public class MainContext : DbContext {
     public DbSet<Activity> Activities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder) {
-        builder.Entity<Project>().ToTable("Project")
-            .Property(it => it.RowVersion).IsConcurrencyToken();
+        builder.Entity<Project>().ToTable("Project");
         builder.Entity<Subproject>().ToTable("Subproject");
-        builder.Entity<MonthReport>().ToTable("MonthReport")
-            .Property(it => it.RowVersion).IsConcurrencyToken();
-        builder.Entity<Activity>().ToTable("Activity")
-            .Property(it => it.RowVersion).IsConcurrencyToken();
+        builder.Entity<MonthReport>().ToTable("MonthReport");
+        builder.Entity<Activity>().ToTable("Activity");
         builder.Entity<AcceptedWork>().ToTable("ProjectTime");
     }
 }

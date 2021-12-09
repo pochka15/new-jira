@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace lab1.Models {
@@ -7,7 +8,11 @@ public class AcceptedWork {
         SpentTime = spentTime;
     }
 
-    [JsonPropertyName("Code")] public string ProjectId { get; set; }
+    [JsonIgnore] public int Id { get; set; }
+
+    [ForeignKey(nameof(Project))]
+    [JsonPropertyName("Code")]
+    public string ProjectId { get; set; }
 
     public int SpentTime { get; set; }
 }
