@@ -10,11 +10,11 @@ public class MainContext : DbContext {
     public DbSet<Activity> Activities { get; set; }
 
     protected override void OnModelCreating(ModelBuilder builder) {
-        builder.Entity<Project>().ToTable("Project");
-        builder.Entity<Subproject>().ToTable("Subproject");
-        builder.Entity<MonthReport>().ToTable("MonthReport");
-        builder.Entity<Activity>().ToTable("Activity");
-        builder.Entity<AcceptedWork>().ToTable("ProjectTime");
+        builder.Entity<Project>().ToTable(nameof(Project));
+        builder.Entity<Subproject>().ToTable(nameof(Subproject));
+        builder.Entity<MonthReport>().ToTable(nameof(MonthReport));
+        builder.Entity<Activity>().ToTable(nameof(Activity));
+        builder.Entity<AcceptedWork>().ToTable(nameof(AcceptedWork));
     }
 }
 }
