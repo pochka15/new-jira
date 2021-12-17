@@ -1,4 +1,5 @@
 using System.IO;
+using lab1.Controllers.Middlewares;
 using lab1.Dtos.Others;
 using lab1.Models.Data;
 using lab1.Services;
@@ -22,6 +23,7 @@ public class Startup {
 
     public void ConfigureServices(IServiceCollection services) {
         var dataPath = Path.Combine(_environment.WebRootPath, "data");
+        services.AddTransient<DbExceptionHandler>();
         services.AddSingleton(new DataPathSrc(dataPath));
         services.AddControllersWithViews().AddRazorRuntimeCompilation();
         services.AddTransient<IProjectService, DbProjectService>();
@@ -58,6 +60,7 @@ public class Startup {
         app.UseStaticFiles();
 
         app.UseRouting();
+        app.UseMiddleware<DbExceptionHandler>();
 
         app.UseAuthorization();
 
