@@ -14,7 +14,10 @@ public class MainContext : DbContext {
         builder.Entity<Subproject>().ToTable(nameof(Subproject));
         builder.Entity<MonthReport>().ToTable(nameof(MonthReport));
         builder.Entity<Activity>().ToTable(nameof(Activity));
-        builder.Entity<AcceptedWork>().ToTable(nameof(AcceptedWork));
+        builder.Entity<AcceptedWork>().ToTable(nameof(AcceptedWork))
+            .HasOne<Project>()
+            .WithMany()
+            .HasForeignKey(it => it.ProjectId);
     }
 }
 }
